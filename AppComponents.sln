@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLib", "CoreLib\CoreLib.csproj", "{3196957D-6DD8-4E93-82A1-C0D05B1ABEF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLib.Tests", "CoreLib.Tests\CoreLib.Tests.csproj", "{9299679C-129E-4DBD-ABCD-48A091C63E1C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3196957D-6DD8-4E93-82A1-C0D05B1ABEF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3196957D-6DD8-4E93-82A1-C0D05B1ABEF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3196957D-6DD8-4E93-82A1-C0D05B1ABEF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3196957D-6DD8-4E93-82A1-C0D05B1ABEF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9299679C-129E-4DBD-ABCD-48A091C63E1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9299679C-129E-4DBD-ABCD-48A091C63E1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9299679C-129E-4DBD-ABCD-48A091C63E1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9299679C-129E-4DBD-ABCD-48A091C63E1C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
