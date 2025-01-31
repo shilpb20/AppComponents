@@ -10,23 +10,25 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllItems_WhenCalled()
         {
             //Arrange
-            var repository = new Repository<MockItem>(_dbContext);
+            Repository<MockItem> repository = GetRepository();
 
             //Act
             var allMockItems = await repository.GetAllAsync();
 
             //Assert
-           AssertMockItemsEqual(DataList.MockItems, allMockItems);
+            AssertMockItemsEqual(DataList.MockItems, allMockItems);
         }
+
+
 
         [Fact]
         public async Task GetAllAsync_ReturnsAllItemsWithMatchingCondition_WhenCalledWithAMatchCondition_EvenIds()
         {
             //Arrange
-            var repository = new Repository<MockItem>(_dbContext);
+            Repository<MockItem> repository = GetRepository();
 
             //Act
-            var mockItemsWithEvenIds = await repository.GetAllAsync(x => x.Id % 2 == 0);
+            IEnumerable<MockItem>? mockItemsWithEvenIds = await repository.GetAllAsync(x => x.Id % 2 == 0);
 
             //Assert
             AssertMockItemsEqual(DataList.MockItemsWithEvenIds, mockItemsWithEvenIds);
@@ -36,7 +38,7 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllItemsWithMatchingCondition_WhenCalledWithAMatchCondition_OddIds()
         {
             //Arrange
-            var repository = new Repository<MockItem>(_dbContext);
+            Repository<MockItem> repository = GetRepository();
 
             //Act
             var mockItemsWithOddIds = await repository.GetAllAsync(X => X.Id % 2 != 0);
@@ -50,10 +52,10 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllWithTrackingDisabled_WhenCalledWithNoTracking()
         {
             //Arrange
-            var repository = new Repository<MockItem>(_dbContext);
+            Repository<MockItem> repository = GetRepository();
 
             //Act
-            var allMockItems = await repository.GetAllAsync(null, true);
+            await repository.GetAllAsync(null, true);
 
             //Assert
             var result = _dbContext.ChangeTracker.QueryTrackingBehavior;
@@ -64,10 +66,10 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllWithTrackingEnabled_WhenCalledWithTracking()
         {
             //Arrange
-            var repository = new Repository<MockItem>(_dbContext);
+            Repository<MockItem> repository = GetRepository();
 
             //Act
-            var allMockItems = await repository.GetAllAsync(null, false);
+            await repository.GetAllAsync(null, false);
 
             //Assert
             var result = _dbContext.ChangeTracker.QueryTrackingBehavior;
@@ -78,10 +80,10 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllWithTrackingEnabled_WhenCalledOnDefaultValue()
         {
             //Arrange
-            var repository = new Repository<MockItem>(_dbContext);
+            Repository<MockItem> repository = GetRepository();
 
             //Act
-            var allMockItems = await repository.GetAllAsync(null);
+            await repository.GetAllAsync(null);
 
             //Assert
             var result = _dbContext.ChangeTracker.QueryTrackingBehavior;
