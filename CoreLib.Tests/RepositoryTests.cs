@@ -75,8 +75,8 @@ namespace CoreLib.Tests
                 int i = 0;
                 foreach (var item in mockItemsWithEvenIds)
                 {
-                    Assert.Equal(DataList.MockItems[i].Id, item.Id);
-                    Assert.Equal(DataList.MockItems[i].Name, item.Name);
+                    Assert.Equal(DataList.MockItemsWithEvenIds[i].Id, item.Id);
+                    Assert.Equal(DataList.MockItemsWithEvenIds[i].Name, item.Name);
 
                     i++;
                 }
@@ -108,8 +108,8 @@ namespace CoreLib.Tests
                 int i = 0;
                 foreach (var item in mockItemsWithOddIds)
                 {
-                    Assert.Equal(DataList.MockItems[i].Id, item.Id);
-                    Assert.Equal(DataList.MockItems[i].Name, item.Name);
+                    Assert.Equal(DataList.MockItemsWithOddIds[i].Id, item.Id);
+                    Assert.Equal(DataList.MockItemsWithOddIds[i].Name, item.Name);
 
                     i++;
                 }

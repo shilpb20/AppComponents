@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 namespace AppComponents.CoreLib
 {
     public class Repository<T> : IRepository<T> where T : class
-    {
+    {                                                             
         private readonly DbContext _dbContext;
         private readonly DbSet<T> _dataSet;
 
@@ -16,7 +16,14 @@ namespace AppComponents.CoreLib
 
         public async Task<IEnumerable<T>>? GetAllAsync(Expression<Func<T, bool>> filter = null)
         {
-            return await _dataSet.ToListAsync();
+            var query = _dataSet.AsQueryable();
+
+            if(filter != null)
+            {
+                query =  query.Where(filter);
+            }
+
+            return await query.ToListAsync();
         }
     }
 }
