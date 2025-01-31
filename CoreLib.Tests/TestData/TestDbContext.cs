@@ -1,10 +1,4 @@
-﻿using AppComponents.CoreLib;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace CoreLib.Tests.TestData
 {
@@ -12,7 +6,9 @@ namespace CoreLib.Tests.TestData
     {
         public DbSet<MockItem> MockItems { get; set; }
 
-        public TestDbContext(DbContextOptions<TestDbContext> options) : base(options) { }
+        public TestDbContext(DbContextOptions<TestDbContext> options) : base(options)
+        {
+        }
 
     }
 }

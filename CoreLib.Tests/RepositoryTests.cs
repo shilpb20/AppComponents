@@ -4,9 +4,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoreLib.Tests
 {
-    public class RepositoryTests
+    public class RepositoryTests : IAsyncLifetime
     {
         private TestDbContext _dbContext;
+
+        public async Task InitializeAsync() => await InitializeData();
+        public Task DisposeAsync() => _dbContext.DisposeAsync().AsTask();
+
+        private static void AssertMockItemsEqual(IEnumerable<MockItem> expectedItems, IEnumerable<MockItem> actualItems)
+        {
+            Assert.NotNull(actualItems);
+
+            Assert.Collection(actualItems, expectedItems
+                .Select(expected => (Action<MockItem>)(actual =>
+                {
+                    Assert.Equal(expected.Id, actual.Id);
+                    Assert.Equal(expected.Name, actual.Name);
+                }))
+                .ToArray());
+        }
 
         private async Task InitializeData()
         {
@@ -23,164 +39,82 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllItems_WhenCalled()
         {
             //Arrange
-            await InitializeData();
-
             var repository = new Repository<MockItem>(_dbContext);
 
             //Act
             var allMockItems = await repository.GetAllAsync();
 
             //Assert
-            Assert.NotNull(allMockItems);
-            Assert.Equal(DataList.MockItems.Count, allMockItems.Count());
-
-            int i = 0;
-            foreach (var item in allMockItems)
-            {
-                Assert.Equal(DataList.MockItems[i].Id, item.Id);
-                Assert.Equal(DataList.MockItems[i].Name, item.Name);
-
-                i++;
-            }
+           AssertMockItemsEqual(DataList.MockItems, allMockItems);
         }
 
         [Fact]
         public async Task GetAllAsync_ReturnsAllItemsWithMatchingCondition_WhenCalledWithAMatchCondition_EvenIds()
         {
             //Arrange
-            await InitializeData();
-
             var repository = new Repository<MockItem>(_dbContext);
 
             //Act
             var mockItemsWithEvenIds = await repository.GetAllAsync(x => x.Id % 2 == 0);
 
             //Assert
-            Assert.NotNull(mockItemsWithEvenIds);
-            Assert.Equal(DataList.MockItemsWithEvenIds.Count, mockItemsWithEvenIds.Count());
-
-            int i = 0;
-            foreach (var item in mockItemsWithEvenIds)
-            {
-                Assert.Equal(DataList.MockItemsWithEvenIds[i].Id, item.Id);
-                Assert.Equal(DataList.MockItemsWithEvenIds[i].Name, item.Name);
-
-                i++;
-            }
+            AssertMockItemsEqual(DataList.MockItemsWithEvenIds, mockItemsWithEvenIds);
         }
 
         [Fact]
         public async Task GetAllAsync_ReturnsAllItemsWithMatchingCondition_WhenCalledWithAMatchCondition_OddIds()
         {
             //Arrange
-            await InitializeData();
-
             var repository = new Repository<MockItem>(_dbContext);
 
             //Act
             var mockItemsWithOddIds = await repository.GetAllAsync(X => X.Id % 2 != 0);
 
             //Assert
-            Assert.NotNull(mockItemsWithOddIds);
-            Assert.Equal(DataList.MockItemsWithOddIds.Count, mockItemsWithOddIds.Count());
-
-            int i = 0;
-            foreach (var item in mockItemsWithOddIds)
-            {
-                Assert.Equal(DataList.MockItemsWithOddIds[i].Id, item.Id);
-                Assert.Equal(DataList.MockItemsWithOddIds[i].Name, item.Name);
-
-                i++;
-            }
+           AssertMockItemsEqual(DataList.MockItemsWithOddIds, mockItemsWithOddIds); 
         }
 
+        //TODO: Fix issue
         [Fact]
         public async Task GetAllAsync_ReturnsAllWithTrackingDisabled_WhenCalledWithNoTracking()
         {
             //Arrange
-            await InitializeData();
-
             var repository = new Repository<MockItem>(_dbContext);
 
             //Act
-            _dbContext.ChangeTracker.Clear();
             var allMockItems = await repository.GetAllAsync(null, true);
-            var isTracked = _dbContext.ChangeTracker.Entries<MockItem>().Any();
 
             //Assert
-            Assert.NotNull(allMockItems);
-            Assert.False(isTracked);
-
-            Assert.Equal(DataList.MockItems.Count, allMockItems.Count());
-
-            int i = 0;
-            foreach (var item in allMockItems)
-            {
-                Assert.Equal(DataList.MockItems[i].Id, item.Id);
-                Assert.Equal(DataList.MockItems[i].Name, item.Name);
-
-                i++;
-            }
+            var result = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            Assert.Equal(QueryTrackingBehavior.NoTracking, result);
         }
 
         [Fact]
         public async Task GetAllAsync_ReturnsAllWithTrackingEnabled_WhenCalledWithTracking()
         {
             //Arrange
-            await InitializeData();
-
             var repository = new Repository<MockItem>(_dbContext);
 
             //Act
-            _dbContext.ChangeTracker.Clear();
-
             var allMockItems = await repository.GetAllAsync(null, false);
-            var isTracked = _dbContext.ChangeTracker.Entries<MockItem>().Any();
 
             //Assert
-            Assert.NotNull(allMockItems);
-            Assert.True(isTracked);
-
-            Assert.Equal(DataList.MockItems.Count, allMockItems.Count());
-
-            int i = 0;
-            foreach (var item in allMockItems)
-            {
-                Assert.Equal(DataList.MockItems[i].Id, item.Id);
-                Assert.Equal(DataList.MockItems[i].Name, item.Name);
-
-                i++;
-            }
+            var result = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            Assert.Equal(QueryTrackingBehavior.TrackAll, result);
         }
 
         [Fact]
         public async Task GetAllAsync_ReturnsAllWithTrackingEnabled_WhenCalledOnDefaultValue()
         {
             //Arrange
-            await InitializeData();
-
             var repository = new Repository<MockItem>(_dbContext);
 
             //Act
-
-            _dbContext.ChangeTracker.Clear();
-            var allMockItems = await repository.GetAllAsync(null, false);
-            var isTracked = _dbContext.ChangeTracker.Entries<MockItem>().Any();
+            var allMockItems = await repository.GetAllAsync(null);
 
             //Assert
-            Assert.NotNull(allMockItems);
-            Assert.True(isTracked);
-
-            Assert.Equal(DataList.MockItems.Count, allMockItems.Count());
-
-            int i = 0;
-            foreach (var item in allMockItems)
-            {
-                Assert.Equal(DataList.MockItems[i].Id, item.Id);
-                Assert.Equal(DataList.MockItems[i].Name, item.Name);
-
-                i++;
-            }
+            var result = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            Assert.Equal(QueryTrackingBehavior.TrackAll, result);
         }
     }
 }

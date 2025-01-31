@@ -14,16 +14,15 @@ namespace AppComponents.CoreLib
             _dataSet = _dbContext.Set<T>();
         }
 
-        public async Task<IEnumerable<T>>? GetAllAsync(Expression<Func<T, bool>> filter = null, bool asNoTracking = false)
+        public async Task<IEnumerable<T>>? GetAllAsync(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false)
         {
             IQueryable<T> query = _dataSet;
 
-            if(asNoTracking)
-            {
-                query = query.AsNoTracking();
-            }
+            _dbContext.ChangeTracker.QueryTrackingBehavior = asNoTracking
+                  ? QueryTrackingBehavior.NoTracking
+                  : QueryTrackingBehavior.TrackAll;
 
-            if(filter != null)
+            if (filter != null)
             {
                 query =  query.Where(filter);
             }
