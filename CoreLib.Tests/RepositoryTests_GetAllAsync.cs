@@ -4,37 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CoreLib.Tests
 {
-    public class RepositoryTests : IAsyncLifetime
+    public class RepositoryTests_GetAllAsync : RepositoryTestsBase, IAsyncLifetime
     {
-        private TestDbContext _dbContext;
-
-        public async Task InitializeAsync() => await InitializeData();
-        public Task DisposeAsync() => _dbContext.DisposeAsync().AsTask();
-
-        private static void AssertMockItemsEqual(IEnumerable<MockItem> expectedItems, IEnumerable<MockItem> actualItems)
-        {
-            Assert.NotNull(actualItems);
-
-            Assert.Collection(actualItems, expectedItems
-                .Select(expected => (Action<MockItem>)(actual =>
-                {
-                    Assert.Equal(expected.Id, actual.Id);
-                    Assert.Equal(expected.Name, actual.Name);
-                }))
-                .ToArray());
-        }
-
-        private async Task InitializeData()
-        {
-            var options = new DbContextOptionsBuilder<TestDbContext>()
-           .UseInMemoryDatabase(Guid.NewGuid().ToString())
-           .Options;
-
-            _dbContext = new TestDbContext(options);
-            await _dbContext.MockItems.AddRangeAsync(DataList.MockItems);
-            await _dbContext.SaveChangesAsync();
-        }
-
         [Fact]
         public async Task GetAllAsync_ReturnsAllItems_WhenCalled()
         {
