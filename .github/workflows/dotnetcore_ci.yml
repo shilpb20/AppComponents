@@ -40,9 +40,9 @@ jobs:
           dotnet restore
           dotnet build --configuration Release
 
-      - name: Run tests
+      - name: Run tests with code coverage
         run: |
-          dotnet test --collect:"XPlat Code Coverage" --configuration Release --no-build --verbosity normal
+          dotnet test --configuration Release --no-build --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" --verbosity normal
 
       - name: Publish Coverage Results to SonarCloud
         run: |
