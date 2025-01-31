@@ -30,8 +30,12 @@ namespace AppComponents.CoreLib
            return await query?.ToListAsync();
         }
 
-        public async Task<T?> GetAsync(Expression<Func<T, bool>> filter)
+        public async Task<T?> GetAsync(Expression<Func<T, bool>> filter, bool asNoTracking = false)
         {
+            _dbContext.ChangeTracker.QueryTrackingBehavior = asNoTracking
+                ? QueryTrackingBehavior.NoTracking
+                : QueryTrackingBehavior.TrackAll;
+
             return await _dataSet.Where(filter).FirstOrDefaultAsync();
         }
     }

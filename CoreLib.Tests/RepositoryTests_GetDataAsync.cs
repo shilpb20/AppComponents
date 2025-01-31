@@ -84,7 +84,7 @@ namespace CoreLib.Tests
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            var result = await repository.GetAsync(x => x.Id == 1, false);
+            var result = await repository.GetAsync(x => x.Id == 1, true);
             var tracking = _dbContext.ChangeTracker.QueryTrackingBehavior;
 
             //Assert
@@ -131,9 +131,9 @@ namespace CoreLib.Tests
             var trackingOnFirstSwitch = _dbContext.ChangeTracker.QueryTrackingBehavior;
             Assert.Equal(QueryTrackingBehavior.NoTracking, trackingOnFirstSwitch);
 
-            await repository.GetAsync(x => x.Id == 1, true);
-            var tracking = _dbContext.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(QueryTrackingBehavior.TrackAll, tracking);
+            await repository.GetAsync(x => x.Id == 1, false);
+            var trackingOnSecondSwitch = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            Assert.Equal(QueryTrackingBehavior.TrackAll, trackingOnSecondSwitch);
         }
     }
 }

@@ -131,17 +131,17 @@ namespace CoreLib.Tests
 
             //Act
             //Assert
-            await repository.GetAllAsync(false);
+            await repository.GetAllAsync(null, false);
             var tracking = _dbContext.ChangeTracker.QueryTrackingBehavior;
             Assert.Equal(QueryTrackingBehavior.TrackAll, tracking);
 
-            await repository.GetAllAsync(true);
+            await repository.GetAllAsync(null, true);
             var trackingOnFirstSwitch = _dbContext.ChangeTracker.QueryTrackingBehavior;
             Assert.Equal(QueryTrackingBehavior.NoTracking, trackingOnFirstSwitch);
 
-            await repository.GetAllAsync(true);
-            var tracking = _dbContext.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(QueryTrackingBehavior.TrackAll, tracking);
+            await repository.GetAllAsync(null, false);
+            var trackingOnSecondSwitch = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            Assert.Equal(QueryTrackingBehavior.TrackAll, trackingOnSecondSwitch);
         }
     }
 }
