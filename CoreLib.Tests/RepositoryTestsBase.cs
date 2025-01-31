@@ -15,6 +15,8 @@ namespace CoreLib.Tests
         protected readonly Expression<Func<MockItem, bool>> _queryItemWithId0 = x => x.Id == 0;
         protected readonly Expression<Func<MockItem, bool>> _queryItemWithId1 = x => x.Id == 1;
 
+        protected readonly Expression<Func<MockItem, bool>> _queryItemForUpdateData = x => x.Id == 5;
+
         protected readonly Expression<Func<MockItem, bool>> _queryItemWitDuplicateName = x => x.Name == TestData.DuplicateName;
         protected readonly Expression<Func<MockItem, bool>> _queryNewItemByName = x => x.Name == TestData.NewItem.Name;
 

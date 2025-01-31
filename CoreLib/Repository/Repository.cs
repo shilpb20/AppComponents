@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AppComponents.CoreLib.Repository;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace AppComponents.CoreLib
@@ -21,6 +22,22 @@ namespace AppComponents.CoreLib
                 await _dataSet.AddAsync(entity);
                 await SaveChangesAsync();
             }
+
+            return entity;
+        }
+
+        public virtual async Task<T?> UpdateAsync(T entity)
+        {
+            if (entity != null)
+            {
+                 _dataSet.Update(entity);
+                await SaveChangesAsync();
+            }
+            else
+            {
+                throw new InvalidOperationException(RepositoryConstants.NullUpdate);
+            }
+
 
             return entity;
         }

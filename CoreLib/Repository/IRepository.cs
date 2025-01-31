@@ -9,5 +9,6 @@ namespace AppComponents.CoreLib
         public Task<IEnumerable<T>>? GetAllAsync(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false);
         Task<T?> GetAsync(Expression<Func<T, bool>> filter, bool asNoTracking = false);
         Task SaveChangesAsync();
+        Task<T?> UpdateAsync(T entity);
     }
 }

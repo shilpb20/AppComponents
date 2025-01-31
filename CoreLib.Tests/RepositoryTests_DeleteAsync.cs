@@ -13,7 +13,7 @@ namespace CoreLib.Tests
     public class RepositoryTests_DeleteAsync  : RepositoryTestsBase, IAsyncLifetime
     {
         [Fact]
-        public async Task AddAsync_ReturnsNull_WhenMatchingObjectNotFound()
+        public async Task DeleteAsync_DeletesMatchingObject_WhenFound()
         {
             //Arrange
             Repository<MockItem> repository = GetRepository();

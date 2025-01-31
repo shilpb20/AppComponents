@@ -13,7 +13,9 @@ namespace CoreLib.Tests.Data
         [Required]
         public int Id { get; set; }
 
-        public string? Name { get; set; }
+        [Required]
+        [MinLength(3)]
+        public string Name { get; set; }
         public string? Value { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,9 +11,14 @@ namespace CoreLib.Tests.Data
     public static class TestData
     {
         public static readonly string DuplicateName = "Item";
+        public static readonly string UpdatedName = "Item 5";
 
         public static readonly MockItem NewItem = new MockItem() { Id = 6,  Name = "New Item", Value = "New Value" };
         public static readonly MockItem FirstDuplicateItem = new MockItem() { Id = 4, Name = DuplicateName, Value = "Value 4" };
+        public static readonly MockItem LastDuplicateItem = new MockItem() { Id = 5, Name = DuplicateName, Value = "Value 4" };
+
+        public static readonly MockItem UpdateItem = new MockItem() { Id = 5, Name = "Item 5", Value = "Value 5" };
+        public static readonly MockItem InvalidUpdateItem = new MockItem() { Id = 5, Name = "It", Value = "Value 5" };
 
         public static readonly List<MockItem> MockItems = new()
         {
