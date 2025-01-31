@@ -24,10 +24,10 @@ namespace AppComponents.CoreLib
 
             if (filter != null)
             {
-                query =  query.Where(filter);
+                query =  query?.Where(filter);
             }
 
-           return await query.ToListAsync();
+           return await query?.ToListAsync();
         }
     }
 }

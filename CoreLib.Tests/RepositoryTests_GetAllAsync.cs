@@ -5,7 +5,39 @@ using Microsoft.EntityFrameworkCore;
 namespace CoreLib.Tests
 {
     public class RepositoryTests_GetAllAsync : RepositoryTestsBase, IAsyncLifetime
-    {
+    {   
+
+        [Fact]
+        public async Task GetAllAsync_ReturnsEmptyList_WhenCalledOnEmptyDataset()
+        {
+            //Arrange
+            await InitializeAsync(mockItems: new List<MockItem>());
+            var repository = GetRepository();
+
+            //Act
+            var data = await repository?.GetAllAsync();
+
+
+            //Assert
+            Assert.Empty(data);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ReturnsEmptyList_WhenCalledOnUninitializedDataset()
+        {
+            //Arrange
+            await InitializeAsync(mockItems: null);
+            var repository = GetRepository();
+
+            //Act
+            var data = await repository?.GetAllAsync();
+
+
+            //Assert
+            Assert.Empty(data);
+        }
+
+
         [Fact]
         public async Task GetAllAsync_ReturnsAllItems_WhenCalled()
         {
@@ -13,7 +45,7 @@ namespace CoreLib.Tests
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            var allMockItems = await repository.GetAllAsync();
+            var allMockItems = await repository?.GetAllAsync();
 
             //Assert
             AssertMockItemsEqual(DataList.MockItems, allMockItems);
@@ -28,7 +60,7 @@ namespace CoreLib.Tests
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            IEnumerable<MockItem>? mockItemsWithEvenIds = await repository.GetAllAsync(x => x.Id % 2 == 0);
+            IEnumerable<MockItem> mockItemsWithEvenIds = await repository.GetAllAsync(x => x.Id % 2 == 0);
 
             //Assert
             AssertMockItemsEqual(DataList.MockItemsWithEvenIds, mockItemsWithEvenIds);
@@ -55,7 +87,7 @@ namespace CoreLib.Tests
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            await repository.GetAllAsync(null, true);
+            await repository?.GetAllAsync(null, true);
 
             //Assert
             var result = _dbContext.ChangeTracker.QueryTrackingBehavior;
@@ -86,7 +118,7 @@ namespace CoreLib.Tests
             await repository.GetAllAsync(null);
 
             //Assert
-            var result = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            var result = _dbContext?.ChangeTracker.QueryTrackingBehavior;
             Assert.Equal(QueryTrackingBehavior.TrackAll, result);
         }
     }
