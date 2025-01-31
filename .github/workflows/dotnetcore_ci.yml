@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Cache NuGet packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
@@ -42,4 +42,8 @@ jobs:
 
       - name: Run tests
         run: |
-        
+          dotnet test --collect:"XPlat Code Coverage" --configuration Release --no-build --verbosity normal
+
+      - name: Publish Coverage Results to SonarCloud
+        run: |
+          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
