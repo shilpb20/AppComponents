@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoreLib.Tests.TestData
+namespace CoreLib.Tests.Data
 {
     public class MockItem
     {

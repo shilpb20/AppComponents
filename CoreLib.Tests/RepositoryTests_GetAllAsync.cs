@@ -1,12 +1,11 @@
 using AppComponents.CoreLib;
-using CoreLib.Tests.TestData;
+using CoreLib.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoreLib.Tests
 {
     public class RepositoryTests_GetAllAsync : RepositoryTestsBase, IAsyncLifetime
-    {   
-
+    {
         [Fact]
         public async Task GetAllAsync_ReturnsEmptyList_WhenCalledOnEmptyDataset()
         {
@@ -48,7 +47,7 @@ namespace CoreLib.Tests
             var allMockItems = await repository?.GetAllAsync();
 
             //Assert
-            AssertMockItemsEqual(DataList.MockItems, allMockItems);
+            AssertMockItemsEqual(TestData.MockItems, allMockItems);
         }
 
 
@@ -60,10 +59,10 @@ namespace CoreLib.Tests
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            IEnumerable<MockItem> mockItemsWithEvenIds = await repository.GetAllAsync(x => x.Id % 2 == 0);
+            IEnumerable<MockItem> mockItemsWithEvenIds = await repository.GetAllAsync(_queryItemsWithEvenId);
 
             //Assert
-            AssertMockItemsEqual(DataList.MockItemsWithEvenIds, mockItemsWithEvenIds);
+            AssertMockItemsEqual(TestData.MockItemsWithEvenIds, mockItemsWithEvenIds);
         }
 
         [Fact]
@@ -73,13 +72,12 @@ namespace CoreLib.Tests
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            var mockItemsWithOddIds = await repository.GetAllAsync(X => X.Id % 2 != 0);
+            var mockItemsWithOddIds = await repository.GetAllAsync(_queryItemsWithOddId);
 
             //Assert
-           AssertMockItemsEqual(DataList.MockItemsWithOddIds, mockItemsWithOddIds); 
+            AssertMockItemsEqual(TestData.MockItemsWithOddIds, mockItemsWithOddIds); 
         }
 
-        //TODO: Fix issue
         [Fact]
         public async Task GetAllAsync_ReturnsAllWithTrackingDisabled_WhenCalledWithNoTracking()
         {
@@ -90,8 +88,7 @@ namespace CoreLib.Tests
             await repository?.GetAllAsync(null, true);
 
             //Assert
-            var result = _dbContext.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(QueryTrackingBehavior.NoTracking, result);
+            AssertTrackingBehavior(_noTrack);
         }
 
         [Fact]
@@ -104,8 +101,7 @@ namespace CoreLib.Tests
             await repository.GetAllAsync(null, false);
 
             //Assert
-            var result = _dbContext.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(QueryTrackingBehavior.TrackAll, result);
+            AssertTrackingBehavior(_trackAll);
         }
 
         [Fact]
@@ -118,30 +114,26 @@ namespace CoreLib.Tests
             await repository.GetAllAsync(null);
 
             //Assert
-            var result = _dbContext?.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(QueryTrackingBehavior.TrackAll, result);
+            AssertTrackingBehavior(_trackAll);
         }
 
         [Fact]
         public async Task GetAllAsync_TrackingBehaviorSwitches_WhenCalledWithAlternatingValues()
         {
             //Arrange
-            await InitializeAsync(DataList.DuplicateMockItems);
+            await InitializeAsync(TestData.DuplicateMockItems);
             Repository<MockItem> repository = GetRepository();
 
             //Act
             //Assert
             await repository.GetAllAsync(null, false);
-            var tracking = _dbContext.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(QueryTrackingBehavior.TrackAll, tracking);
+            AssertTrackingBehavior(_trackAll);
 
             await repository.GetAllAsync(null, true);
-            var trackingOnFirstSwitch = _dbContext.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(QueryTrackingBehavior.NoTracking, trackingOnFirstSwitch);
+            AssertTrackingBehavior(_noTrack);
 
             await repository.GetAllAsync(null, false);
-            var trackingOnSecondSwitch = _dbContext.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(QueryTrackingBehavior.TrackAll, trackingOnSecondSwitch);
+            AssertTrackingBehavior(_trackAll);
         }
     }
 }

@@ -14,6 +14,11 @@ namespace AppComponents.CoreLib
             _dataSet = _dbContext.Set<T>();
         }
 
+        public async Task<T?> AddAsync(T entity)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<T>>? GetAllAsync(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false)
         {
             IQueryable<T>? query = _dataSet;

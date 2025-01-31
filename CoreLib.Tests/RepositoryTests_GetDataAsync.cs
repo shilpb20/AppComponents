@@ -1,9 +1,10 @@
 ﻿using AppComponents.CoreLib;
-using CoreLib.Tests.TestData;
+using CoreLib.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace CoreLib.Tests
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            var result = await repository.GetAsync(x => x.Id == 0);
+            var result = await repository.GetAsync(_queryItemWithId0);
 
             //Assert
             Assert.Null(result);
@@ -31,109 +32,86 @@ namespace CoreLib.Tests
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            var result = await repository.GetAsync(x => x.Id == 1);
+            var result = await repository.GetAsync(_queryItemWithId1);
 
             //Assert
-            var expectedData = DataList.MockItems.Find(x => x.Id == 1);
-            Assert.Equal(expectedData.Id, result.Id);
-            Assert.Equal(expectedData.Name, result.Name);
+            AssertMockItem(TestData.MockItems.First(), result);
         }
 
         [Fact]
         public async Task GetAsync_ReturnsFirstMatchingItem_WhenMultipleMatchingDataFound()
         {
             //Arrange
-            int id = 4;
-            string name = "Item";
+            var expectedResult = new MockItem() { Id = 4, Name = TestData.DuplicateName };
 
-            await InitializeAsync(DataList.DuplicateMockItems);
+            await InitializeAsync(TestData.DuplicateMockItems);
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            var result = await repository.GetAsync(x => x.Name == "Item");
+            var result = await repository.GetAsync(_queryItemWitDuplicateName);
 
             //Assert
-            Assert.Equal(id, result.Id);
-            Assert.Equal(name, result.Name);
+           AssertMockItem(expectedResult, result);
         }
 
         [Fact]
         public async Task GetAsync_ReturnsTrackingAllBehavior_WhenTrackingIsSet()
         {
             //Arrange
-            await InitializeAsync(DataList.DuplicateMockItems);
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            var result = await repository.GetAsync(x => x.Id == 1, false);
-            var tracking = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            var result = await repository.GetAsync(_queryItemWithId1, false);
 
             //Assert
-            Assert.Equal(QueryTrackingBehavior.TrackAll, tracking);
-
-            var expectedData = DataList.MockItems.Find(x => x.Id == 1);
-            Assert.Equal(expectedData.Id, result.Id);
-            Assert.Equal(expectedData.Name, result.Name);
+            AssertTrackingBehavior(_trackAll);
+            AssertMockItem(TestData.MockItems.First(), result);
         }
 
         [Fact]
         public async Task GetAsync_ReturnsNoTrackingBehavior_WhenNoTrackingIsSet()
         {
             //Arrange
-            await InitializeAsync(DataList.DuplicateMockItems);
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            var result = await repository.GetAsync(x => x.Id == 1, true);
-            var tracking = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            var result = await repository.GetAsync(_queryItemWithId1, true);
 
             //Assert
-            Assert.Equal(QueryTrackingBehavior.NoTracking, tracking);
-
-            var expectedData = DataList.MockItems.Find(x => x.Id == 1);
-            Assert.Equal(expectedData.Id, result.Id);
-            Assert.Equal(expectedData.Name, result.Name);
+            AssertTrackingBehavior(_noTrack);
+            AssertMockItem(TestData.MockItems.First(), result);
         }
 
         [Fact]
         public async Task GetAsync_ReturnsTrackingAllBehavior_WhenImplicitlyCalled()
         {
             //Arrange
-            await InitializeAsync(DataList.DuplicateMockItems);
             Repository<MockItem> repository = GetRepository();
 
             //Act
-            var result = await repository.GetAsync(x => x.Id == 1);
-            var tracking = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            var result = await repository.GetAsync(_queryItemWithId1);
 
             //Assert
-            Assert.Equal(QueryTrackingBehavior.TrackAll, tracking);
-
-            var expectedData = DataList.MockItems.Find(x => x.Id == 1);
-            Assert.Equal(expectedData.Id, result.Id);
-            Assert.Equal(expectedData.Name, result.Name);
+            AssertTrackingBehavior(_trackAll);
+            AssertMockItem(TestData.MockItems.First(), result);
         }
 
         [Fact]
         public async Task GetAsync_TrackingBehaviorSwitches_WhenCalledWithAlternatingValues()
         {
             //Arrange
-            await InitializeAsync(DataList.DuplicateMockItems);
             Repository<MockItem> repository = GetRepository();
 
             //Act
             //Assert
-            await repository.GetAsync(x => x.Id == 1, false);
-            var tracking = _dbContext.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(QueryTrackingBehavior.TrackAll, tracking);
+            await repository.GetAsync(_queryItemWithId1, false);
+            AssertTrackingBehavior(_trackAll);
 
-            await repository.GetAsync(x => x.Id == 1, true);
-            var trackingOnFirstSwitch = _dbContext.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(QueryTrackingBehavior.NoTracking, trackingOnFirstSwitch);
+            await repository.GetAsync(_queryItemWithId1, true);
+            AssertTrackingBehavior(_noTrack);
 
-            await repository.GetAsync(x => x.Id == 1, false);
-            var trackingOnSecondSwitch = _dbContext.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(QueryTrackingBehavior.TrackAll, trackingOnSecondSwitch);
+            await repository.GetAsync(_queryItemWithId1, false);
+            AssertTrackingBehavior(_trackAll);
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using AppComponents.CoreLib;
-using CoreLib.Tests.TestData;
+using CoreLib.Tests;
+using CoreLib.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Linq.Expressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CoreLib.Tests
 {
@@ -9,9 +12,22 @@ namespace CoreLib.Tests
     {
         protected TestDbContext? _dbContext;
 
+        protected readonly Expression<Func<MockItem, bool>> _queryItemWithId0 = x => x.Id == 0;
+        protected readonly Expression<Func<MockItem, bool>> _queryItemWithId1 = x => x.Id == 1;
+
+        protected readonly Expression<Func<MockItem, bool>> _queryItemWitDuplicateName = x => x.Name == TestData.DuplicateName;
+        protected readonly Expression<Func<MockItem, bool>> _queryNewItemByName = x => x.Name == TestData.NewItem.Name;
+
+        protected readonly Expression<Func<MockItem, bool>> _queryItemsWithEvenId = x => x.Id % 2 ==0;
+        protected readonly Expression<Func<MockItem, bool>> _queryItemsWithOddId = x => x.Id % 2 != 0;
+
+
+        protected readonly QueryTrackingBehavior _trackAll = QueryTrackingBehavior.TrackAll;
+        protected readonly QueryTrackingBehavior _noTrack = QueryTrackingBehavior.NoTracking;
+
         public async Task InitializeAsync()
         {
-            await InitializeAsync(mockItems:DataList.MockItems);
+            await InitializeAsync(mockItems: TestData.MockItems);
         }
 
         public async Task InitializeAsync(IEnumerable<MockItem>? mockItems = null)
@@ -35,7 +51,7 @@ namespace CoreLib.Tests
         // Dispose DbContext
         public Task DisposeAsync() => _dbContext.DisposeAsync().AsTask();
 
-        protected static void AssertMockItemsEqual(IEnumerable<MockItem> expectedItems, IEnumerable<MockItem> actualItems)
+        protected void AssertMockItemsEqual(IEnumerable<MockItem> expectedItems, IEnumerable<MockItem> actualItems)
         {
             Assert.NotNull(actualItems);
 
@@ -46,6 +62,19 @@ namespace CoreLib.Tests
                     Assert.Equal(expected.Name, actual.Name);
                 }))
                 .ToArray());
+        }
+
+        protected void AssertMockItem(MockItem? expectedResult, MockItem? actualResult)
+        {
+            Assert.NotNull(actualResult);
+            Assert.Equal(expectedResult?.Id, actualResult?.Id);
+            Assert.Equal(expectedResult?.Name, actualResult?.Name);
+        }
+
+        protected void AssertTrackingBehavior(QueryTrackingBehavior expectedBehaviour)
+        {
+            var result = _dbContext?.ChangeTracker.QueryTrackingBehavior;
+            Assert.Equal(expectedBehaviour, result);
         }
 
         protected Repository<MockItem> GetRepository()
