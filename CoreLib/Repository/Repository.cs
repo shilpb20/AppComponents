@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace AppComponents.CoreLib
 {
@@ -13,7 +14,7 @@ namespace AppComponents.CoreLib
             _dataSet = _dbContext.Set<T>();
         }
 
-        public async Task<IEnumerable<T>>? GetAllAsync()
+        public async Task<IEnumerable<T>>? GetAllAsync(Expression<Func<T, bool>> filter = null)
         {
             return await _dataSet.ToListAsync();
         }

@@ -13,7 +13,23 @@ namespace CoreLib.Tests.TestData
         {
             new MockItem { Id = 1, Name = "Item 1" },
             new MockItem { Id = 2, Name = "Item 2" },
-            new MockItem { Id = 3, Name = "Item 3" }
+            new MockItem { Id = 3, Name = "Item 3" },
+            new MockItem { Id = 4, Name = "Item 4" },
+            new MockItem { Id = 5, Name = "Item 5" }
+        };
+
+
+        public static readonly List<MockItem> MockItemsWithOddIds = new()
+        {
+            new MockItem { Id = 1, Name = "Item 1" },
+            new MockItem { Id = 3, Name = "Item 3" },
+            new MockItem { Id = 5, Name = "Item 5" }
+        };
+
+        public static readonly List<MockItem> MockItemsWithEvenIds = new()
+        {
+            new MockItem { Id = 2, Name = "Item 2" },
+            new MockItem { Id = 4, Name = "Item 4" },
         };
     }
 }
