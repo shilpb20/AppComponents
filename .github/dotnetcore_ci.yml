@@ -1,0 +1,54 @@
+name: .NET Core CI
+
+on:
+  push:
+    branches:
+      - development
+      - master
+  pull_request:
+    branches:
+      - development
+      - master
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '8.0'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Install SonarScanner
+        run: |
+          dotnet tool install --global dotnet-sonarscanner
+
+      - name: SonarCloud Begin Analysis
+        run: |
+          dotnet sonarscanner begin /k:"shilpb20_AppComponents" /o:"shilpb20" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+
+      - name: Build code
+        run: |
+          dotnet restore
+          dotnet build
+
+      - name: Run tests
+        run: |
+          dotnet test --collect:"XPlat Code Coverage" --configuration Release --no-build --verbosity normal
+
+      - name: Publish Coverage Results to SonarCloud
+        run: |
+          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
