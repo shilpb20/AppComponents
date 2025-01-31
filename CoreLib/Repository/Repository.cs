@@ -25,9 +25,15 @@ namespace AppComponents.CoreLib
             return entity;
         }
 
-        public async Task<T?> DeleteAsync(int id)
+        public async Task<T?> DeleteAsync(T entity)
         {
-            throw new NotImplementedException();
+            if(entity != null)
+            {
+                _dataSet.Remove(entity);
+                await SaveChangesAsync();
+            }
+
+            return entity;
         }
 
         public virtual async Task SaveChangesAsync()

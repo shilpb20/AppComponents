@@ -1,7 +1,9 @@
 ﻿using AppComponents.CoreLib;
 using CoreLib.Tests.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +20,7 @@ namespace CoreLib.Tests
             var countBeforeDeletion = _dbContext.MockItems.Count();
 
             //Act  
-            var result = await repository.DeleteAsync(1);
+            var result = await repository.DeleteAsync(TestData.MockItems.First());
             var deletedObject = await repository.GetAsync(_queryItemWithId1);
 
             var countAfterDeletion = _dbContext.MockItems.Count();
@@ -31,15 +33,33 @@ namespace CoreLib.Tests
         }
 
         [Fact]
-        public async Task DeleteAsync_DeletesAndReturnsMatchingObject_WhenMatchingObjectFound()
+        public async Task DeleteAsync_ThrowsDbConcurrencyException_WhenMatchingObjectNotFound()
         {
             Repository<MockItem> repository = GetRepository();
 
             //Act  
-            var result = await repository.DeleteAsync(0);
+            //Assert
+            await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
+            {
+                await repository.DeleteAsync(TestData.NewItem);
+            });
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ReturnsNull_WhenNullIsPassedForDeletion()
+        {
+            Repository<MockItem> repository = GetRepository();
+
+            //Act  
+            var countBeforeDeletion = _dbContext.MockItems.Count();
+
+            var result = await repository.DeleteAsync(null);
+
+            var countAfterDeletion = _dbContext.MockItems.Count();
 
             //Assert
             Assert.Null(result);
+            Assert.Equal(countBeforeDeletion, countAfterDeletion);
         }
     }
 }
