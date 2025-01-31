@@ -17,20 +17,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0'
-
-      - name: Cache NuGet packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+	  cache: true
+    	  cache-dependency-path: "**/packages.lock.json"
 
       - name: Install SonarScanner
         run: |
@@ -42,7 +36,7 @@ jobs:
 
       - name: Build code
         run: |
-          dotnet restore
+          dotnet restore --locked-mode
           dotnet build
 
       - name: Run tests
