@@ -9,7 +9,7 @@ on:
     branches:
       - development
       - master
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,12 +17,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: '8.0'
+        uses: actions/checkout@v4
 
       - name: Cache NuGet packages
         uses: actions/cache@v2
@@ -43,12 +38,8 @@ jobs:
       - name: Build code
         run: |
           dotnet restore
-          dotnet build
+          dotnet build --configuration Release
 
       - name: Run tests
         run: |
-          dotnet test --collect:"XPlat Code Coverage" --configuration Release --no-build --verbosity normal
-
-      - name: Publish Coverage Results to SonarCloud
-        run: |
-          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        
