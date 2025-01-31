@@ -25,6 +25,11 @@ namespace AppComponents.CoreLib
             return entity;
         }
 
+        public async Task<T?> DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual async Task SaveChangesAsync()
         {
             await _dbContext.SaveChangesAsync();

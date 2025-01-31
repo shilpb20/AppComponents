@@ -18,13 +18,17 @@ namespace CoreLib.Tests
 
             //Act  
             var newItem = TestData.NewItem;
+            var countBeforeAddition = _dbContext.MockItems.Count();
             var result = await repository.AddAsync(newItem);
 
-            var checkResult = await repository.GetAsync(_queryNewItemByName);
+            var newlyAddedObject = await repository.GetAsync(_queryNewItemByName);
+            var countAfterAddition = _dbContext.MockItems.Count();
 
             //Assert
-            AssertMockItem(result, checkResult);
+            AssertMockItem(result, newlyAddedObject);
             AssertMockItem(result, newItem);
+
+            Assert.Equal(countBeforeAddition, countAfterAddition - 1);
         }
 
         [Fact]
