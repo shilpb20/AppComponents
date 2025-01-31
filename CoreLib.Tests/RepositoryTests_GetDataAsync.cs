@@ -42,7 +42,7 @@ namespace CoreLib.Tests
         public async Task GetAsync_ReturnsFirstMatchingItem_WhenMultipleMatchingDataFound()
         {
             //Arrange
-            var expectedResult = new MockItem() { Id = 4, Name = TestData.DuplicateName };
+            var expectedResult = TestData.FirstDuplicateItem;
 
             await InitializeAsync(TestData.DuplicateMockItems);
             Repository<MockItem> repository = GetRepository();

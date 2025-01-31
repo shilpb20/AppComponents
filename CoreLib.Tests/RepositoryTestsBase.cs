@@ -60,6 +60,7 @@ namespace CoreLib.Tests
                 {
                     Assert.Equal(expected.Id, actual.Id);
                     Assert.Equal(expected.Name, actual.Name);
+                    Assert.Equal(expected.Value, actual.Value);
                 }))
                 .ToArray());
         }
@@ -69,6 +70,7 @@ namespace CoreLib.Tests
             Assert.NotNull(actualResult);
             Assert.Equal(expectedResult?.Id, actualResult?.Id);
             Assert.Equal(expectedResult?.Name, actualResult?.Name);
+            Assert.Equal(expectedResult?.Value, actualResult?.Value);
         }
 
         protected void AssertTrackingBehavior(QueryTrackingBehavior expectedBehavior)
