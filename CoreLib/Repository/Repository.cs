@@ -16,7 +16,7 @@ namespace AppComponents.CoreLib
 
         public async Task<IEnumerable<T>>? GetAllAsync(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false)
         {
-            IQueryable<T> query = _dataSet;
+            IQueryable<T>? query = _dataSet;
 
             _dbContext.ChangeTracker.QueryTrackingBehavior = asNoTracking
                   ? QueryTrackingBehavior.NoTracking
@@ -28,6 +28,11 @@ namespace AppComponents.CoreLib
             }
 
            return await query?.ToListAsync();
+        }
+
+        public async Task<T?> GetAsync(Expression<Func<T, bool>> filter)
+        {
+            throw new NotImplementedException();
         }
     }
 }
