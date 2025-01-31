@@ -14,12 +14,23 @@ namespace AppComponents.CoreLib
             _dataSet = _dbContext.Set<T>();
         }
 
-        public async Task<T?> AddAsync(T entity)
+        public virtual async Task<T?> AddAsync(T entity)
         {
-            throw new NotImplementedException();
+            if (entity != null)
+            {
+                await _dataSet.AddAsync(entity);
+                await SaveChangesAsync();
+            }
+
+            return entity;
         }
 
-        public async Task<IEnumerable<T>>? GetAllAsync(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false)
+        public virtual async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public virtual async Task<IEnumerable<T>>? GetAllAsync(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false)
         {
             IQueryable<T>? query = _dataSet;
 
@@ -35,7 +46,7 @@ namespace AppComponents.CoreLib
            return await query?.ToListAsync();
         }
 
-        public async Task<T?> GetAsync(Expression<Func<T, bool>> filter, bool asNoTracking = false)
+        public virtual async Task<T?> GetAsync(Expression<Func<T, bool>> filter, bool asNoTracking = false)
         {
             _dbContext.ChangeTracker.QueryTrackingBehavior = asNoTracking
                 ? QueryTrackingBehavior.NoTracking

@@ -26,5 +26,19 @@ namespace CoreLib.Tests
             AssertMockItem(result, checkResult);
             AssertMockItem(result, newItem);
         }
+
+        [Fact]
+        public async Task AddAsync_ReturnsNull_WhenNullObjectIsAdded()
+        {
+            //Arrange
+            Repository<MockItem> repository = GetRepository();
+
+            //Act  
+            var newItem = TestData.NewItem;
+            var result = await repository.AddAsync(null);
+
+            //Assert
+            Assert.Null(result);
+        }
     }
 }

@@ -71,10 +71,10 @@ namespace CoreLib.Tests
             Assert.Equal(expectedResult?.Name, actualResult?.Name);
         }
 
-        protected void AssertTrackingBehavior(QueryTrackingBehavior expectedBehaviour)
+        protected void AssertTrackingBehavior(QueryTrackingBehavior expectedBehavior)
         {
             var result = _dbContext?.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(expectedBehaviour, result);
+            Assert.Equal(expectedBehavior, result);
         }
 
         protected Repository<MockItem> GetRepository()
