@@ -1,37 +1,45 @@
 using AppComponents.CoreLib;
 using CoreLib.Tests.TestData;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace CoreLib.Tests
 {
     public class RepositoryTests
     {
+        private readonly TestDbContext _dbContext;
+
+        private async Task InitialiseData()
+        {
+            var options = new DbContextOptionsBuilder<TestDbContext>()
+           .UseInMemoryDatabase("TestDatabase")
+           .Options;
+
+            _dbContext = new TestDbContext(options);
+            await _dbContext.MockItems.AddRangeAsync(DataList.MockItems);
+            await _dbContext.SaveChangesAsync();
+        }
 
         [Fact]
         public async void GetAllAsync_ReturnsAllItems_WhenCalled()
         {
             //Arrange
-            List<MockItem> mockItemList = new()
-            {
-                new MockItem { Id = 1, Name = "Item 1" },
-                new MockItem { Id = 2, Name = "Item 2" },
-                new MockItem { Id = 3, Name = "Item 3" }
-            };
+            await InitialiseData();
 
-            var repository = new Mock<Repository<MockItem>>();
+            var repository = new Repository<MockItem>(_dbContext);
 
             //Act
-            var allMockItems = await repository.Object.GetAllAsync();
+            var allMockItems = await repository.GetAllAsync();
 
             //Assert
             Assert.NotNull(allMockItems);
-            Assert.Equal(3, mockItemList.Count);
+            Assert.Equal(DataList.MockItems.Count, DataList.MockItems.Count);
 
             int i = 0;
            foreach(var item in allMockItems)
             {
-                Assert.Equal(mockItemList[i].Id, item.Id);
-                Assert.Equal(mockItemList[i].Name, item.Name);
+                Assert.Equal(DataList.MockItems[i].Id, item.Id);
+                Assert.Equal(DataList.MockItems[i].Name, item.Name);
 
                 i++;
             }
