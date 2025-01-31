@@ -32,7 +32,7 @@ namespace AppComponents.CoreLib
 
         public async Task<T?> GetAsync(Expression<Func<T, bool>> filter)
         {
-            throw new NotImplementedException();
+            return await _dataSet.Where(filter).FirstOrDefaultAsync();
         }
     }
 }
