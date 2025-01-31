@@ -9,7 +9,7 @@ on:
     branches:
       - development
       - master
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,12 +17,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: '8.0'
+        uses: actions/checkout@v4
 
       - name: Cache NuGet packages
         uses: actions/cache@v3
@@ -43,7 +38,7 @@ jobs:
       - name: Build code
         run: |
           dotnet restore
-          dotnet build
+          dotnet build --configuration Release
 
       - name: Run tests with code coverage
         run: |
