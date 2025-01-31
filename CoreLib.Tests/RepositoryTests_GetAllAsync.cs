@@ -121,5 +121,27 @@ namespace CoreLib.Tests
             var result = _dbContext?.ChangeTracker.QueryTrackingBehavior;
             Assert.Equal(QueryTrackingBehavior.TrackAll, result);
         }
+
+        [Fact]
+        public async Task GetAllAsync_TrackingBehaviorSwitches_WhenCalledWithAlternatingValues()
+        {
+            //Arrange
+            await InitializeAsync(DataList.DuplicateMockItems);
+            Repository<MockItem> repository = GetRepository();
+
+            //Act
+            //Assert
+            await repository.GetAllAsync(false);
+            var tracking = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            Assert.Equal(QueryTrackingBehavior.TrackAll, tracking);
+
+            await repository.GetAllAsync(true);
+            var trackingOnFirstSwitch = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            Assert.Equal(QueryTrackingBehavior.NoTracking, trackingOnFirstSwitch);
+
+            await repository.GetAllAsync(true);
+            var tracking = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            Assert.Equal(QueryTrackingBehavior.TrackAll, tracking);
+        }
     }
 }
