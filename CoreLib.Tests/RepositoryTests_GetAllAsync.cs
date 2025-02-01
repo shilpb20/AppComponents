@@ -1,6 +1,7 @@
 using AppComponents.CoreLib;
 using CoreLib.Tests.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Immutable;
 
 namespace CoreLib.Tests
 {
@@ -47,7 +48,7 @@ namespace CoreLib.Tests
             var allMockItems = await repository?.GetAllAsync();
 
             //Assert
-            AssertMockItemsEqual(TestData.MockItems, allMockItems);
+            AssertMockItems(TestData.MockItems, allMockItems);
         }
 
 
@@ -62,7 +63,7 @@ namespace CoreLib.Tests
             IEnumerable<MockItem> mockItemsWithEvenIds = await repository.GetAllAsync(_queryItemsWithEvenId);
 
             //Assert
-            AssertMockItemsEqual(TestData.MockItemsWithEvenIds, mockItemsWithEvenIds);
+            AssertMockItems(TestData.MockItemsWithEvenIds, mockItemsWithEvenIds);
         }
 
         [Fact]
@@ -75,9 +76,87 @@ namespace CoreLib.Tests
             var mockItemsWithOddIds = await repository.GetAllAsync(_queryItemsWithOddId);
 
             //Assert
-            AssertMockItemsEqual(TestData.MockItemsWithOddIds, mockItemsWithOddIds); 
+            AssertMockItems(TestData.MockItemsWithOddIds, mockItemsWithOddIds); 
         }
 
+        [Theory]
+        [InlineData(1, 2)]
+        [InlineData(2, 3)]
+        public async Task GetAllAsyncWithPagination_ReturnsMatchingData_WhenDataIsInTheRange(int pageIndex, int pageSize)
+        {
+            //Act
+            InitializeAsync(TestData.MockItemsForPagination);
+            var repository = GetRepository();
+
+            int skipItems = (pageIndex - 1) * pageSize;
+            int takeItems = pageSize;
+            var expectedResult = TestData.MockItemsForPagination.Skip(skipItems).Take(takeItems).ToImmutableList();
+
+
+            //Act
+            var result = await repository.GetAllAsync(null, true, pageIndex, pageSize);
+
+            //Assert
+            AssertMockItems(expectedResult, result);
+        }
+
+        [Theory]
+        [InlineData(1, 30, 20)]
+        [InlineData(4, 6, 2)]
+        [InlineData(5, 5, 0)]
+        public async Task GetAllAsyncWithPagination_ReturnsRemainingData_WhenMoreThanExistingDataIsRequested(int pageIndex, int pageSize, int takeItems)
+        {
+            //Act
+            InitializeAsync(TestData.MockItemsForPagination);
+            var repository = GetRepository();
+
+            int skipItems = (pageIndex - 1) * pageSize;
+            var expectedResult = TestData.MockItemsForPagination.Skip(skipItems).Take(takeItems).ToImmutableList();
+
+
+            //Act
+            var result = await repository.GetAllAsync(null, true, pageIndex, pageSize);
+
+            //Assert
+            AssertMockItems(expectedResult, result);
+        }
+
+        [Theory]
+        [InlineData(-1, 2)]
+        [InlineData(2, 0)]
+        [InlineData(3, -2)]
+        [InlineData(null, -1)]
+        [InlineData(-2, null)]
+        public async Task GetAllAsyncWithPagination_ReturnsEmptyData_WhenIncorrectRequestIsMade(int? pageIndex, int? pageSize)
+        {
+            //Act
+            InitializeAsync(TestData.MockItemsForPagination);
+            var repository = GetRepository();
+
+            //Act
+            var result = await repository.GetAllAsync(null, true, pageIndex, pageSize);
+
+            //Assert
+            Assert.Empty(result);
+        }
+
+        [Theory]
+        [InlineData(null, 3)]
+        [InlineData(4, null)]
+        public async Task GetAllAsyncWithPagination_ReturnsEmptyData_WhenNullValuesAreUsed(int? pageIndex, int? pageSize)
+        {
+            //Act
+            InitializeAsync(TestData.MockItemsForPagination);
+            var repository = GetRepository();
+
+            //Act
+            var result = await repository.GetAllAsync(null, true, pageIndex, pageSize);
+
+            //Assert
+            Assert.Empty(result);
+        }
+
+        #region tracking behaviour tests
 
         [Fact]
         public async Task GetAllAsync_ReturnsAllWithTrackingEnabled_WhenCalledWithTracking()
@@ -133,5 +212,7 @@ namespace CoreLib.Tests
         //    await AssertTrackingBehaviorForGetAllAsync(repository, _queryItemsWithPositiveIds, true);
         //    await AssertTrackingBehaviorForGetAllAsync(repository, _queryItemsWithPositiveIds, false);
         //}
+
+        #endregion
     }
 }

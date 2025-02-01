@@ -50,7 +50,10 @@ namespace AppComponents.CoreLib.Repository
         /// If <c>true</c>, the returned entities are not tracked by the context.
         /// </param>
         /// <returns>A task representing the asynchronous operation. The task result contains an <see cref="IQueryable{T}"/> of entities.</returns>
-        Task<IQueryable<T>> GetAll(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false);
+        Task<IQueryable<T>> GetAll(Expression<Func<T, bool>>? filter = null, 
+            bool asNoTracking = false, 
+            int? pageIndex = null,
+            int? pageSize = null);
 
         /// <summary>
         /// Gets a materialized list of entities asynchronously.
@@ -64,7 +67,10 @@ namespace AppComponents.CoreLib.Repository
         /// If <c>true</c>, the returned entities are not tracked by the context.
         /// </param>
         /// <returns>A task representing the asynchronous operation. The task result contains a list of entities.</returns>
-        Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false);
+        Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, 
+            bool asNoTracking = false, 
+            int? pageIndex = null, 
+            int? pageSize = null);
 
         /// <summary>
         /// Gets a single entity matching the specified filter asynchronously.
@@ -77,6 +83,7 @@ namespace AppComponents.CoreLib.Repository
         /// A task representing the asynchronous operation. The task result contains the first entity matching the filter; 
         /// if no such entity exists, the result is <c>null</c>.
         /// </returns>
-        Task<T?> GetAsync(Expression<Func<T, bool>> filter, bool asNoTracking = false);
+        Task<T?> GetAsync(Expression<Func<T, bool>> filter, 
+            bool asNoTracking = false);
     }
 }

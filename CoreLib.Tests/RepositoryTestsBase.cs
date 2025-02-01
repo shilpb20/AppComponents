@@ -55,7 +55,7 @@ namespace CoreLib.Tests
         // Dispose DbContext
         public Task DisposeAsync() => _dbContext.DisposeAsync().AsTask();
 
-        protected void AssertMockItemsEqual(IEnumerable<MockItem> expectedItems, IEnumerable<MockItem> actualItems)
+        protected void AssertMockItems(IEnumerable<MockItem> expectedItems, IEnumerable<MockItem> actualItems)
         {
             Assert.NotNull(actualItems);
 

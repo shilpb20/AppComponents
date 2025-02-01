@@ -48,7 +48,7 @@ namespace CoreLib.Tests
             var result = await data.ToListAsync();
 
             //Assert
-            AssertMockItemsEqual(TestData.MockItems, result);
+            AssertMockItems(TestData.MockItems, result);
         }
 
 
@@ -64,7 +64,7 @@ namespace CoreLib.Tests
             var result = await mockItemsWithEvenIds.ToListAsync();
 
             //Assert
-            AssertMockItemsEqual(TestData.MockItemsWithEvenIds, mockItemsWithEvenIds);
+            AssertMockItems(TestData.MockItemsWithEvenIds, mockItemsWithEvenIds);
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace CoreLib.Tests
             var result = await mockItemsWithOddIds.ToListAsync();
 
             //Assert
-            AssertMockItemsEqual(TestData.MockItemsWithOddIds, mockItemsWithOddIds); 
+            AssertMockItems(TestData.MockItemsWithOddIds, mockItemsWithOddIds); 
         }
     }
 }

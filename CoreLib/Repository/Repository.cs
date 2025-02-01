@@ -113,7 +113,11 @@ namespace AppComponents.CoreLib
         /// <returns>
         /// An <see cref="IQueryable{T}"/> of entities.
         /// </returns>
-        public virtual Task<IQueryable<T>> GetAll(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false)
+        public virtual async Task<IQueryable<T>> GetAll(
+            Expression<Func<T, bool>>? filter = null,
+            bool asNoTracking = false,
+            int? pageIndex = null,
+            int? pageSize = null)
         {
             IQueryable<T> query = GetQueryableDataset(asNoTracking);
             if (filter != null)
@@ -121,7 +125,20 @@ namespace AppComponents.CoreLib
                 query = query.Where(filter);
             }
 
-            return Task.FromResult(query);
+            if (pageIndex.HasValue && (pageIndex.Value < 0 || pageSize ==null) || 
+                pageSize.HasValue &&  (pageIndex == null || pageSize.Value < 0))
+            {
+
+                return query.Skip(await query.CountAsync());
+            }
+
+            if (pageIndex.HasValue && pageSize.HasValue)
+            {
+                int pointer = (pageIndex.Value - 1) * pageSize.Value;
+                query = query.Skip(pointer).Take(pageSize.Value);
+            }
+
+            return query;
         }
 
 
@@ -140,10 +157,14 @@ namespace AppComponents.CoreLib
         /// <returns>
         /// A task representing the asynchronous operation, containing a list of entities.
         /// </returns>
-        public virtual async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false)
+        public virtual async Task<List<T>> GetAllAsync(
+            Expression<Func<T, bool>>? filter = null, 
+            bool asNoTracking = false, 
+            int? pageIndex = null, 
+            int? pageSize = null)
         {
             // Directly await the result of GetAll instead of double-awaiting
-            IQueryable<T> query = await GetAll(filter, asNoTracking);
+            IQueryable<T> query = await GetAll(filter, asNoTracking, pageIndex, pageSize);
             return await query.ToListAsync();
         }
 
@@ -178,7 +199,6 @@ namespace AppComponents.CoreLib
         private IQueryable<T> GetQueryableDataset(bool asNoTracking)
         {
             IQueryable<T> query = _dataSet.AsQueryable();
-
             if (asNoTracking)
             {
                 query = query.AsNoTracking();
