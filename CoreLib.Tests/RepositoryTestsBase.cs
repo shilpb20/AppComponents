@@ -12,6 +12,8 @@ namespace CoreLib.Tests
     {
         protected TestDbContext? _dbContext;
 
+        protected readonly Expression<Func<MockItem, bool>> _queryItemsWithPositiveIds = x => x.Id > 0;
+
         protected readonly Expression<Func<MockItem, bool>> _queryItemWithId0 = x => x.Id == 0;
         protected readonly Expression<Func<MockItem, bool>> _queryItemWithId1 = x => x.Id == 1;
 
@@ -75,10 +77,53 @@ namespace CoreLib.Tests
             Assert.Equal(expectedResult?.Value, actualResult?.Value);
         }
 
-        protected void AssertTrackingBehavior(QueryTrackingBehavior expectedBehavior)
+        protected async Task AssertTrackingBehaviorForGetAllAsync(
+            Repository<MockItem> repository,
+            Expression<Func<MockItem, bool>> filter,
+            bool? asNoTracking = null)
         {
-            var result = _dbContext?.ChangeTracker.QueryTrackingBehavior;
-            Assert.Equal(expectedBehavior, result);
+            if (asNoTracking.HasValue)
+            {
+                var result = await repository.GetAllAsync(filter, asNoTracking.Value);
+            }
+            else
+            {
+                var result = await repository.GetAsync(filter);
+            }
+            VerifyTrackingBehavior(asNoTracking);
+        }
+
+        protected async Task AssertTrackingBehaviorForGetAsync(
+            Repository<MockItem> repository,
+            Expression<Func<MockItem, bool>> filter,
+            bool? asNoTracking = null)
+        {
+            _dbContext.ChangeTracker.Clear();
+
+
+            if (asNoTracking.HasValue)
+            {
+                var result = await repository.GetAsync(filter, asNoTracking.Value);
+            }
+            else
+            {
+                var result = await repository.GetAsync(filter);
+            }
+
+            VerifyTrackingBehavior(asNoTracking);
+        }
+
+        private void VerifyTrackingBehavior(bool? asNoTracking)
+        {
+            var currentTrackingBehavior = _dbContext.ChangeTracker.QueryTrackingBehavior;
+            if (asNoTracking.HasValue && asNoTracking.Value)
+            {
+                Assert.Equal(QueryTrackingBehavior.NoTracking, currentTrackingBehavior);
+            }
+            else
+            {
+                Assert.Equal(QueryTrackingBehavior.TrackAll, currentTrackingBehavior);
+            }
         }
 
         protected Repository<MockItem> GetRepository()

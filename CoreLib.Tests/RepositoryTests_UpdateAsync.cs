@@ -37,7 +37,6 @@ namespace CoreLib.Tests
         {
             //Arrange
             Repository<MockItem> repository = GetRepository();
-            MockItem mockItem = null;
 
             //Act  
             //Assert

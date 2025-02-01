@@ -58,29 +58,33 @@ namespace AppComponents.CoreLib
             await _dbContext.SaveChangesAsync();
         }
 
-        public virtual async Task<IEnumerable<T>>? GetAllAsync(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false)
+        public virtual async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, bool asNoTracking = false)
         {
-            IQueryable<T>? query = _dataSet;
-
-            _dbContext.ChangeTracker.QueryTrackingBehavior = asNoTracking
-                  ? QueryTrackingBehavior.NoTracking
-                  : QueryTrackingBehavior.TrackAll;
-
+            IQueryable<T>? query = GetQueryableDataset(asNoTracking);
             if (filter != null)
             {
-                query =  query?.Where(filter);
+                query = query?.Where(filter);
             }
 
-           return await query?.ToListAsync();
+            return query;
         }
 
         public virtual async Task<T?> GetAsync(Expression<Func<T, bool>> filter, bool asNoTracking = false)
         {
-            _dbContext.ChangeTracker.QueryTrackingBehavior = asNoTracking
-                ? QueryTrackingBehavior.NoTracking
-                : QueryTrackingBehavior.TrackAll;
+            IQueryable<T>? query = GetQueryableDataset(asNoTracking);
+            return await query.Where(filter).FirstOrDefaultAsync();
+        }
 
-            return await _dataSet.Where(filter).FirstOrDefaultAsync();
+        private IQueryable<T>? GetQueryableDataset(bool asNoTracking)
+        {
+            IQueryable<T>? query = _dataSet.AsQueryable();
+
+            if (asNoTracking)
+            {
+                query = query?.AsNoTracking();
+            }
+
+            return query;
         }
     }
 }
