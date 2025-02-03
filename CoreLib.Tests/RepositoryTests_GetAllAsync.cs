@@ -1,6 +1,5 @@
 using AppComponents.CoreLib;
 using CoreLib.Tests.Data;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Immutable;
 
 namespace CoreLib.Tests
@@ -52,6 +51,20 @@ namespace CoreLib.Tests
         }
 
 
+        #region filter tests
+
+        [Fact]
+        public async Task GetAllAsync_ReturnsEmptyList_WhenCalledWithANonMatchingFilter()
+        {
+            //Arrange
+            Repository<MockItem> repository = GetRepository();
+
+            //Act
+            IEnumerable<MockItem> mockItemsWithNonMatchingFilter = await repository.GetAllAsync(_queryItemsWithNegativeIds);
+
+            //Assert
+            Assert.Empty(mockItemsWithNonMatchingFilter);
+        }
 
         [Fact]
         public async Task GetAllAsync_ReturnsAllItemsWithMatchingCondition_WhenCalledWithAMatchCondition_EvenIds()
@@ -76,8 +89,12 @@ namespace CoreLib.Tests
             var mockItemsWithOddIds = await repository.GetAllAsync(_queryItemsWithOddId);
 
             //Assert
-            AssertMockItems(TestData.MockItemsWithOddIds, mockItemsWithOddIds); 
+            AssertMockItems(TestData.MockItemsWithOddIds, mockItemsWithOddIds);
         }
+
+        #endregion
+
+        #region pagination tests
 
         [Theory]
         [InlineData(1, 2)]
@@ -155,6 +172,85 @@ namespace CoreLib.Tests
             //Assert
             Assert.Empty(result);
         }
+
+        #endregion
+
+        #region sorting tests
+
+
+        [Fact]
+        public async Task GetAllAsyncIn_ReturnsDataInAscendingOrder_WhenAscendingOrderIsAppliedToMultipleColumns()
+        {
+            //Arrange
+            InitializeAsync(TestData.MockItemsForOrderBy);
+            var expectedData = TestData.MockItemsForOrderBy.OrderBy(x => x.Id).ThenBy(x => x.Name).ThenBy(x => x.Value).ToList();
+
+            Repository<MockItem> repository = GetRepository();
+
+            var orderByClause = new Dictionary<string, bool>
+            {
+                [TestData.Column1] = true,
+                [TestData.Column2] = true,
+                [TestData.Column3] = true
+            };
+
+
+            //Act
+            var result = await repository.GetAllAsync(null, false, null, null, orderByClause);
+
+            //Assert
+            AssertMockItems(expectedData, result);
+        }
+
+        [Fact]
+        public async Task GetAllAsyncIn_ReturnsDataInDescendingOrder_WhenDescendingOrderIsAppliedToMultipleColumns()
+        {
+            //Arrange
+            InitializeAsync(TestData.MockItemsForOrderBy);
+            var expectedData = TestData.MockItemsForOrderBy.OrderByDescending(x => x.Id).ThenByDescending(x => x.Name).ThenByDescending(x => x.Value).ToList();
+
+            Repository<MockItem> repository = GetRepository();
+
+            var orderByClause = new Dictionary<string, bool>
+            {
+                [TestData.Column1] = false,
+                [TestData.Column2] = false,
+                [TestData.Column3] = false
+            };
+
+
+            //Act
+            var result = await repository.GetAllAsync(null, false, null, null, orderByClause);
+
+            //Assert
+            AssertMockItems(expectedData, result);
+        }
+
+        [Fact]
+        public async Task GetAllAsyncIn_ReturnsDataAsPerOrder_WhenDifferentSortingIsAppliedToMultipleColumns()
+        {
+            //Arrange
+            InitializeAsync(TestData.MockItemsForOrderBy);
+            var expectedData = TestData.MockItemsForOrderBy.OrderBy(x => x.Id).ThenByDescending(x => x.Name).ThenBy(x => x.Value).ToList();
+
+            Repository<MockItem> repository = GetRepository();
+
+            var orderByClause = new Dictionary<string, bool>
+            {
+                [TestData.Column1] = true,
+                [TestData.Column2] = false,
+                [TestData.Column3] = true
+            };
+
+
+            //Act
+            var result = await repository.GetAllAsync(null, false, null, null, orderByClause);
+
+            //Assert
+            AssertMockItems(expectedData, result);
+        }
+
+        #endregion
 
         #region tracking behaviour tests
 

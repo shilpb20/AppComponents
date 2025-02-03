@@ -13,6 +13,10 @@ namespace CoreLib.Tests.Data
         public static readonly string DuplicateName = "Item";
         public static readonly string UpdatedName = "Item 5";
 
+        public static readonly string Column1 = "Id";
+        public static readonly string Column2 = "Name";
+        public static readonly string Column3 = "Value";
+
         public static readonly MockItem NewItem = new MockItem() { Id = 6,  Name = "New Item", Value = "New Value" };
         public static readonly MockItem FirstDuplicateItem = new MockItem() { Id = 4, Name = DuplicateName, Value = "Value 4" };
         public static readonly MockItem LastDuplicateItem = new MockItem() { Id = 5, Name = DuplicateName, Value = "Value 4" };
@@ -74,6 +78,20 @@ namespace CoreLib.Tests.Data
             new MockItem { Id = 18, Name = "Item 18", Value = "Value 18" },
             new MockItem { Id = 19, Name = "Item 19", Value = "Value 19" },
             new MockItem { Id = 20, Name = "Item 20", Value = "Value 20" },
+        };
+
+        public static readonly List<MockItem> MockItemsForOrderBy = new()
+        {
+            new MockItem { Id = 2, Name = "Item 2", Value = "Value 2" },
+            new MockItem { Id = 1, Name = "Item 2",  Value = "Value 1" },
+            new MockItem { Id = 4, Name = "Item 3", Value = "Value 4" },
+            new MockItem { Id = 3, Name = "Item 3", Value = "Value 3" },
+            new MockItem { Id = 6, Name = "Item 6", Value = "Value 6" },
+            new MockItem { Id = 5, Name = "Item 5", Value = "Value 5" },
+            new MockItem { Id = 8, Name = "Item 8", Value = "Value 8" },
+            new MockItem { Id = 7, Name = "Item 7", Value = "Value 7" },
+            new MockItem { Id = 10, Name = "Item 10", Value = "Value 10" },
+            new MockItem { Id = 9, Name = "Item 9", Value = "Value 9" },
         };
     }
 }

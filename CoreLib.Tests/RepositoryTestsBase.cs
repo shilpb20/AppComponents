@@ -13,6 +13,7 @@ namespace CoreLib.Tests
         protected TestDbContext? _dbContext;
 
         protected readonly Expression<Func<MockItem, bool>> _queryItemsWithPositiveIds = x => x.Id > 0;
+        protected readonly Expression<Func<MockItem, bool>> _queryItemsWithNegativeIds = x => x.Id < 0;
 
         protected readonly Expression<Func<MockItem, bool>> _queryItemWithId0 = x => x.Id == 0;
         protected readonly Expression<Func<MockItem, bool>> _queryItemWithId1 = x => x.Id == 1;
@@ -24,7 +25,6 @@ namespace CoreLib.Tests
 
         protected readonly Expression<Func<MockItem, bool>> _queryItemsWithEvenId = x => x.Id % 2 ==0;
         protected readonly Expression<Func<MockItem, bool>> _queryItemsWithOddId = x => x.Id % 2 != 0;
-
 
         protected readonly QueryTrackingBehavior _trackAll = QueryTrackingBehavior.TrackAll;
         protected readonly QueryTrackingBehavior _noTrack = QueryTrackingBehavior.NoTracking;

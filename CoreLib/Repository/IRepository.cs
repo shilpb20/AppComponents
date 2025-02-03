@@ -53,7 +53,8 @@ namespace AppComponents.CoreLib.Repository
         Task<IQueryable<T>> GetAll(Expression<Func<T, bool>>? filter = null, 
             bool asNoTracking = false, 
             int? pageIndex = null,
-            int? pageSize = null);
+            int? pageSize = null,
+            Dictionary<string, bool>? orderBy = null);
 
         /// <summary>
         /// Gets a materialized list of entities asynchronously.
@@ -70,7 +71,8 @@ namespace AppComponents.CoreLib.Repository
         Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, 
             bool asNoTracking = false, 
             int? pageIndex = null, 
-            int? pageSize = null);
+            int? pageSize = null,
+            Dictionary<string, bool>? orderBy = null);
 
         /// <summary>
         /// Gets a single entity matching the specified filter asynchronously.

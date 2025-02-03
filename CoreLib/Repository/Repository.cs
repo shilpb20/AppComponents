@@ -117,12 +117,18 @@ namespace AppComponents.CoreLib
             Expression<Func<T, bool>>? filter = null,
             bool asNoTracking = false,
             int? pageIndex = null,
-            int? pageSize = null)
+            int? pageSize = null,
+            Dictionary<string, bool>? orderByClause = null)
         {
             IQueryable<T> query = GetQueryableDataset(asNoTracking);
             if (filter != null)
             {
                 query = query.Where(filter);
+            }
+
+            if (orderByClause != null)
+            {
+                query = ApplyOrdering(query, orderByClause);
             }
 
             if (pageIndex.HasValue && (pageIndex.Value < 0 || pageSize ==null) || 
@@ -140,6 +146,44 @@ namespace AppComponents.CoreLib
 
             return query;
         }
+
+        private static IQueryable<T> ApplyOrdering<T>(IQueryable<T> query, Dictionary<string, bool> orderByClause)
+        {
+            IOrderedQueryable<T>? orderedQuery = null;
+
+            foreach (var order in orderByClause)
+            {
+                var entityType = typeof(T);
+                var property = entityType.GetProperty(order.Key);
+                if (property == null) throw new ArgumentException($"Property {order.Key} not found on type {entityType.Name}");
+
+                var parameter = Expression.Parameter(entityType, "x");
+                var propertyAccess = Expression.Property(parameter, property);
+                var orderByExpression = Expression.Lambda(propertyAccess, parameter);
+
+                string methodName;
+
+                if (orderedQuery == null)
+                {
+                    methodName = order.Value ? "OrderBy" : "OrderByDescending";
+                    orderedQuery = (IOrderedQueryable<T>)typeof(Queryable).GetMethods()
+                        .First(method => method.Name == methodName && method.GetParameters().Length == 2)
+                        .MakeGenericMethod(entityType, property.PropertyType)
+                        .Invoke(null, new object[] { query, orderByExpression })!;
+                }
+                else
+                {
+                    methodName = order.Value ? "ThenBy" : "ThenByDescending";
+                    orderedQuery = (IOrderedQueryable<T>)typeof(Queryable).GetMethods()
+                        .First(method => method.Name == methodName && method.GetParameters().Length == 2)
+                        .MakeGenericMethod(entityType, property.PropertyType)
+                        .Invoke(null, new object[] { orderedQuery, orderByExpression })!;
+                }
+            }
+
+            return orderedQuery ?? query;
+        }
+
 
 
         /// <summary>
@@ -161,12 +205,13 @@ namespace AppComponents.CoreLib
             Expression<Func<T, bool>>? filter = null, 
             bool asNoTracking = false, 
             int? pageIndex = null, 
-            int? pageSize = null)
-        {
-            // Directly await the result of GetAll instead of double-awaiting
-            IQueryable<T> query = await GetAll(filter, asNoTracking, pageIndex, pageSize);
-            return await query.ToListAsync();
-        }
+            int? pageSize = null,
+            Dictionary<string, bool>? orderByClause = null)
+            {
+                // Directly await the result of GetAll instead of double-awaiting
+                IQueryable<T> query = await GetAll(filter, asNoTracking, pageIndex, pageSize, orderByClause);
+                return await query.ToListAsync();
+            }
 
 
         /// <summary>

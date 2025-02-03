@@ -80,5 +80,30 @@ namespace CoreLib.Tests
             //Assert
             AssertMockItems(TestData.MockItemsWithOddIds, mockItemsWithOddIds); 
         }
+
+
+        [Fact]
+        public async Task GetAll_ReturnsDataAsPerOrder_WhenDifferentSortingIsAppliedToMultipleColumns()
+        {
+            //Arrange
+            InitializeAsync(TestData.MockItemsForOrderBy);
+            var expectedData = TestData.MockItemsForOrderBy.OrderBy(x => x.Id).ThenByDescending(x => x.Name).ThenBy(x => x.Value).ToList();
+
+            Repository<MockItem> repository = GetRepository();
+
+            var orderByClause = new Dictionary<string, bool>
+            {
+                [TestData.Column1] = true,
+                [TestData.Column2] = false,
+                [TestData.Column3] = true
+            };
+
+
+            //Act
+            var result = await repository.GetAll(null, false, null, null, orderByClause);
+
+            //Assert
+            AssertMockItems(expectedData, result);
+        }
     }
 }
