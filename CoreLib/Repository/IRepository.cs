@@ -52,9 +52,8 @@ namespace AppComponents.CoreLib.Repository
         /// <returns>A task representing the asynchronous operation. The task result contains an <see cref="IQueryable{T}"/> of entities.</returns>
         Task<IQueryable<T>> GetAll(Expression<Func<T, bool>>? filter = null, 
             bool asNoTracking = false, 
-            int? pageIndex = null,
-            int? pageSize = null,
-            Dictionary<string, bool>? orderBy = null);
+            Dictionary<string, bool>? orderByClause = null,
+            Pagination? paginationSpec = null);
 
         /// <summary>
         /// Gets a materialized list of entities asynchronously.
@@ -69,10 +68,9 @@ namespace AppComponents.CoreLib.Repository
         /// </param>
         /// <returns>A task representing the asynchronous operation. The task result contains a list of entities.</returns>
         Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, 
-            bool asNoTracking = false, 
-            int? pageIndex = null, 
-            int? pageSize = null,
-            Dictionary<string, bool>? orderBy = null);
+            bool asNoTracking = false,
+            Dictionary<string, bool>? orderByClause = null,
+            Pagination? paginationSpec = null);
 
         /// <summary>
         /// Gets a single entity matching the specified filter asynchronously.

@@ -100,7 +100,7 @@ namespace CoreLib.Tests
 
 
             //Act
-            var result = await repository.GetAll(null, false, null, null, orderByClause);
+            var result = await repository.GetAll(null, false, orderByClause, null);
 
             //Assert
             AssertMockItems(expectedData, result);

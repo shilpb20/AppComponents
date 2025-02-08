@@ -1,4 +1,5 @@
 using AppComponents.CoreLib;
+using AppComponents.CoreLib.Repository;
 using CoreLib.Tests.Data;
 using System.Collections.Immutable;
 
@@ -103,6 +104,8 @@ namespace CoreLib.Tests
         {
             //Act
             InitializeAsync(TestData.MockItemsForPagination);
+            var paginationSpec = new Pagination(pageIndex, pageSize);
+
             var repository = GetRepository();
 
             int skipItems = (pageIndex - 1) * pageSize;
@@ -111,7 +114,7 @@ namespace CoreLib.Tests
 
 
             //Act
-            var result = await repository.GetAllAsync(null, true, pageIndex, pageSize);
+            var result = await repository.GetAllAsync(null, true, null, paginationSpec);
 
             //Assert
             AssertMockItems(expectedResult, result);
@@ -121,9 +124,11 @@ namespace CoreLib.Tests
         [InlineData(1, 30, 20)]
         [InlineData(4, 6, 2)]
         [InlineData(5, 5, 0)]
+        [InlineData(null, 3, 3)]
         public async Task GetAllAsyncWithPagination_ReturnsRemainingData_WhenMoreThanExistingDataIsRequested(int pageIndex, int pageSize, int takeItems)
         {
             //Act
+            var paginationSpec = new Pagination(pageIndex, pageSize);
             InitializeAsync(TestData.MockItemsForPagination);
             var repository = GetRepository();
 
@@ -132,7 +137,7 @@ namespace CoreLib.Tests
 
 
             //Act
-            var result = await repository.GetAllAsync(null, true, pageIndex, pageSize);
+            var result = await repository.GetAllAsync(null, true, null, paginationSpec);
 
             //Assert
             AssertMockItems(expectedResult, result);
@@ -144,30 +149,31 @@ namespace CoreLib.Tests
         [InlineData(3, -2)]
         [InlineData(null, -1)]
         [InlineData(-2, null)]
-        public async Task GetAllAsyncWithPagination_ReturnsEmptyData_WhenIncorrectRequestIsMade(int? pageIndex, int? pageSize)
+        public async Task GetAllAsyncWithPagination_ReturnsEmptyData_WhenIncorrectRequestIsMade(int pageIndex, int pageSize)
         {
             //Act
+            Pagination pageSpec = new Pagination(pageIndex, pageSize);
             InitializeAsync(TestData.MockItemsForPagination);
             var repository = GetRepository();
 
             //Act
-            var result = await repository.GetAllAsync(null, true, pageIndex, pageSize);
+            var result = await repository.GetAllAsync(null, true, null, pageSpec);
 
             //Assert
             Assert.Empty(result);
         }
 
         [Theory]
-        [InlineData(null, 3)]
         [InlineData(4, null)]
-        public async Task GetAllAsyncWithPagination_ReturnsEmptyData_WhenNullValuesAreUsed(int? pageIndex, int? pageSize)
+        public async Task GetAllAsyncWithPagination_ReturnsEmptyData_WhenNullValuesAreUsed(int pageIndex, int pageSize)
         {
             //Act
+            Pagination pageSpec = new Pagination(pageIndex, pageSize);
             InitializeAsync(TestData.MockItemsForPagination);
             var repository = GetRepository();
 
             //Act
-            var result = await repository.GetAllAsync(null, true, pageIndex, pageSize);
+            var result = await repository.GetAllAsync(null, true, null, pageSpec);
 
             //Assert
             Assert.Empty(result);
@@ -196,7 +202,7 @@ namespace CoreLib.Tests
 
 
             //Act
-            var result = await repository.GetAllAsync(null, false, null, null, orderByClause);
+            var result = await repository.GetAllAsync(null, false, orderByClause, null);
 
             //Assert
             AssertMockItems(expectedData, result);
@@ -220,7 +226,7 @@ namespace CoreLib.Tests
 
 
             //Act
-            var result = await repository.GetAllAsync(null, false, null, null, orderByClause);
+            var result = await repository.GetAllAsync(null, false, orderByClause, null);
 
             //Assert
             AssertMockItems(expectedData, result);
@@ -244,7 +250,7 @@ namespace CoreLib.Tests
 
 
             //Act
-            var result = await repository.GetAllAsync(null, false, null, null, orderByClause);
+            var result = await repository.GetAllAsync(null, false, orderByClause);
 
             //Assert
             AssertMockItems(expectedData, result);

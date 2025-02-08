@@ -116,9 +116,8 @@ namespace AppComponents.CoreLib
         public virtual async Task<IQueryable<T>> GetAll(
             Expression<Func<T, bool>>? filter = null,
             bool asNoTracking = false,
-            int? pageIndex = null,
-            int? pageSize = null,
-            Dictionary<string, bool>? orderByClause = null)
+            Dictionary<string, bool>? orderByClause = null,
+            Pagination? pagination = null)
         {
             IQueryable<T> query = GetQueryableDataset(asNoTracking);
             if (filter != null)
@@ -131,23 +130,13 @@ namespace AppComponents.CoreLib
                 query = ApplyOrdering(query, orderByClause);
             }
 
-            if (pageIndex.HasValue && (pageIndex.Value < 0 || pageSize ==null) || 
-                pageSize.HasValue &&  (pageIndex == null || pageSize.Value < 0))
-            {
-
-                return query.Skip(await query.CountAsync());
-            }
-
-            if (pageIndex.HasValue && pageSize.HasValue)
-            {
-                int pointer = (pageIndex.Value - 1) * pageSize.Value;
-                query = query.Skip(pointer).Take(pageSize.Value);
-            }
-
-            return query;
+            return (pagination == null) ? query : await pagination.GetPagedResult<T>(query);
+            
         }
 
-        private static IQueryable<T> ApplyOrdering<T>(IQueryable<T> query, Dictionary<string, bool> orderByClause)
+        private static IQueryable<T> ApplyOrdering<T>(
+            IQueryable<T> query, 
+            Dictionary<string, bool> orderByClause)
         {
             IOrderedQueryable<T>? orderedQuery = null;
 
@@ -203,13 +192,12 @@ namespace AppComponents.CoreLib
         /// </returns>
         public virtual async Task<List<T>> GetAllAsync(
             Expression<Func<T, bool>>? filter = null, 
-            bool asNoTracking = false, 
-            int? pageIndex = null, 
-            int? pageSize = null,
-            Dictionary<string, bool>? orderByClause = null)
+            bool asNoTracking = false,
+            Dictionary<string, bool>? orderByClause = null,
+            Pagination? paginationSpec = null)
             {
                 // Directly await the result of GetAll instead of double-awaiting
-                IQueryable<T> query = await GetAll(filter, asNoTracking, pageIndex, pageSize, orderByClause);
+                IQueryable<T> query = await GetAll(filter, asNoTracking, orderByClause, paginationSpec);
                 return await query.ToListAsync();
             }
 
