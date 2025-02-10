@@ -20,18 +20,21 @@ namespace AppComponents.CoreLib.Repository
 
         public async Task<IQueryable<T>> GetPagedResult<T>(IQueryable<T> query)
         {
-            if (PageIndex < 0 || PageSize <= 0)
+            if (PageSize <= 0)
             {
                 return query.Skip(await query.CountAsync());
             }
 
-            if(PageIndex == 0)
+            int totalElements = await query.CountAsync();
+            int takeElements = PageSize <= totalElements ? PageSize : totalElements;
+            
+            if(PageIndex <= 0)
             {
-                return query.Take(PageSize);
+                return query.Take(takeElements);
             }
 
             int pointer = (PageIndex - 1) * PageSize;
-            return query.Skip(pointer).Take(PageSize);
+            return query.Skip(pointer).Take(takeElements);
         }
     }
 }

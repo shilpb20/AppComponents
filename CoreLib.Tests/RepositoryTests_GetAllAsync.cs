@@ -100,6 +100,7 @@ namespace CoreLib.Tests
         [Theory]
         [InlineData(1, 2)]
         [InlineData(2, 3)]
+        [InlineData(-1, 2)]
         public async Task GetAllAsyncWithPagination_ReturnsMatchingData_WhenDataIsInTheRange(int pageIndex, int pageSize)
         {
             //Act
@@ -144,7 +145,6 @@ namespace CoreLib.Tests
         }
 
         [Theory]
-        [InlineData(-1, 2)]
         [InlineData(2, 0)]
         [InlineData(3, -2)]
         [InlineData(null, -1)]
