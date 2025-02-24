@@ -1,5 +1,4 @@
 ﻿using AppComponents.CoreLib.Repository.Abstraction;
-using AppComponents.CoreLib.Repository.Helper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
