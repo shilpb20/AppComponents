@@ -17,7 +17,7 @@ namespace CoreLib.Tests
         public async Task DeleteAsync_DeletesMatchingObject_WhenFound()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
             var countBeforeDeletion = _dbContext.MockItems.Count();
 
             //Act  
@@ -36,7 +36,7 @@ namespace CoreLib.Tests
         [Fact]
         public async Task DeleteAsync_ThrowsDbConcurrencyException_WhenMatchingObjectNotFound()
         {
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act  
             //Assert
@@ -49,7 +49,7 @@ namespace CoreLib.Tests
         [Fact]
         public async Task DeleteAsync_ThrowsNullArgumntException_WhenNullIsPassedForDeletion()
         {
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act  
             //Assert

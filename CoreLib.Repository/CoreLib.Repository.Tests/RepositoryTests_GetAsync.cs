@@ -20,7 +20,7 @@ namespace CoreLib.Tests
         public async Task GetAsync_ReturnsNull_WhenMatchingDataNotFound()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act
             var result = await repository.GetAsync(_queryItemWithId0);
@@ -33,7 +33,7 @@ namespace CoreLib.Tests
         public async Task GetAsync_ReturnsMatchingItem_WhenSingleMatchingDataFound()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act
             var result = await repository.GetAsync(_queryItemWithId1);
@@ -49,7 +49,7 @@ namespace CoreLib.Tests
             var expectedResult = TestData.FirstDuplicateItem;
 
             await InitializeAsync(TestData.DuplicateMockItems);
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act
             var result = await repository.GetAsync(_queryItemWitDuplicateName);

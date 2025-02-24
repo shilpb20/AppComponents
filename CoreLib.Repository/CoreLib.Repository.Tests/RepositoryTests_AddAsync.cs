@@ -16,7 +16,7 @@ namespace CoreLib.Tests
         public async Task AddAsync_ReturnsNewlyAddedObject_WhenValidObjectIsAdded()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act  
             var newItem = TestData.NewItem;
@@ -37,7 +37,7 @@ namespace CoreLib.Tests
         public async Task AddAsync_ThrowsArgumentNullException_WhenNullObjectIsAdded()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act  
             //Assert

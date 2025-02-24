@@ -78,7 +78,7 @@ namespace CoreLib.Tests
         }
 
         protected async Task AssertTrackingBehaviorForGetAllAsync(
-            Repository<MockItem> repository,
+            Repository<MockItem, TestDbContext> repository,
             Expression<Func<MockItem, bool>> filter,
             bool? asNoTracking = null)
         {
@@ -94,7 +94,7 @@ namespace CoreLib.Tests
         }
 
         protected async Task AssertTrackingBehaviorForGetAsync(
-            Repository<MockItem> repository,
+            Repository<MockItem, TestDbContext> repository,
             Expression<Func<MockItem, bool>> filter,
             bool? asNoTracking = null)
         {
@@ -126,7 +126,7 @@ namespace CoreLib.Tests
             }
         }
 
-        protected Repository<MockItem> GetRepository()
+        protected Repository<MockItem, TestDbContext> GetRepository()
         {
             if(_dbContext == null)
             {
@@ -139,9 +139,9 @@ namespace CoreLib.Tests
                 builder.SetMinimumLevel(LogLevel.Debug);
             });
 
-            var logger = loggerFactory.CreateLogger<Repository<MockItem>>();
+            var logger = loggerFactory.CreateLogger<Repository<MockItem, TestDbContext>>();
 
-            var repository = new Repository<MockItem>(_dbContext, logger);
+            var repository = new Repository<MockItem, TestDbContext>(_dbContext, logger);
             if (repository == null)
             {
                 throw new ArgumentNullException(nameof(repository));

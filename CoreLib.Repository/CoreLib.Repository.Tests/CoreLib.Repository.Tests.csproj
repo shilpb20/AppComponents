@@ -24,8 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CoreLib.Repository\CoreLib.Repository.csproj" />
-    <ProjectReference Include="..\CoreLib\CoreLib.Repository.csproj" />
+    <ProjectReference Include="..\CoreLib.Repository.Source\CoreLib.Repository.csproj" />
   </ItemGroup>
 
   <ItemGroup>

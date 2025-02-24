@@ -44,7 +44,7 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllItems_WhenCalled()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act
             var allMockItems = await repository?.GetAllAsync();
@@ -60,7 +60,7 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsEmptyList_WhenCalledWithANonMatchingFilter()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act
             IEnumerable<MockItem> mockItemsWithNonMatchingFilter = await repository.GetAllAsync(_queryItemsWithNegativeIds);
@@ -73,7 +73,7 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllItemsWithMatchingCondition_WhenCalledWithAMatchCondition_EvenIds()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act
             IEnumerable<MockItem> mockItemsWithEvenIds = await repository.GetAllAsync(_queryItemsWithEvenId);
@@ -86,7 +86,7 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllItemsWithMatchingCondition_WhenCalledWithAMatchCondition_OddIds()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act
             var mockItemsWithOddIds = await repository.GetAllAsync(_queryItemsWithOddId);
@@ -188,7 +188,7 @@ namespace CoreLib.Tests
             InitializeAsync(TestData.MockItemsForOrderBy);
             var expectedData = TestData.MockItemsForOrderBy.OrderBy(x => x.Id).ThenBy(x => x.Name).ThenBy(x => x.Value).ToList();
 
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             var orderByClause = new Dictionary<string, bool>
             {
@@ -212,7 +212,7 @@ namespace CoreLib.Tests
             InitializeAsync(TestData.MockItemsForOrderBy);
             var expectedData = TestData.MockItemsForOrderBy.OrderByDescending(x => x.Id).ThenByDescending(x => x.Name).ThenByDescending(x => x.Value).ToList();
 
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             var orderByClause = new Dictionary<string, bool>
             {
@@ -236,7 +236,7 @@ namespace CoreLib.Tests
             InitializeAsync(TestData.MockItemsForOrderBy);
             var expectedData = TestData.MockItemsForOrderBy.OrderBy(x => x.Id).ThenByDescending(x => x.Name).ThenBy(x => x.Value).ToList();
 
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             var orderByClause = new Dictionary<string, bool>
             {
@@ -261,7 +261,7 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllWithTrackingEnabled_WhenCalledWithTracking()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act
             await AssertTrackingBehaviorForGetAllAsync(repository, _queryItemsWithPositiveIds, false);
@@ -271,7 +271,7 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllWithTrackingEnabled_WhenCalledOnDefaultValue()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act
             //Assert

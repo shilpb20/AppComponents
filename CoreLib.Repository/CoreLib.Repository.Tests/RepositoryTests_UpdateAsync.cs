@@ -19,7 +19,7 @@ namespace CoreLib.Tests
         {
             //Arrange
             await InitializeAsync(TestData.DuplicateMockItems);
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act
             //Assert
@@ -36,7 +36,7 @@ namespace CoreLib.Tests
         public async Task UpdateAsync_ThrowsInvalidOperationException_OnUpdateNull()
         {
             //Arrange
-            Repository<MockItem> repository = GetRepository();
+            Repository<MockItem, TestDbContext> repository = GetRepository();
 
             //Act  
             //Assert

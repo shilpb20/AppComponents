@@ -5,19 +5,21 @@ using System.Linq.Expressions;
 
 namespace AppComponents.CoreLib.Repository.EFCore
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T, TContext> : IRepository<T, TContext> 
+        where T : class
+        where TContext : DbContext
     {
-        private readonly DbContext _dbContext;
+        private readonly TContext _dbContext;
         private readonly DbSet<T> _dataSet;
-        private readonly ILogger<IRepository<T>> _logger;
+        private readonly ILogger<Repository<T, TContext>> _logger;
 
-        public Repository(DbContext dbContext, ILogger<IRepository<T>> logger)
+        public Repository(TContext dbContext, ILogger<Repository<T, TContext>> logger)
         {
             _dbContext = dbContext;
             _logger = logger;
-
             _dataSet = _dbContext.Set<T>();
         }
+
 
         #region data update
 
