@@ -18,7 +18,7 @@
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>AppComponents.CoreLib.Repository</PackageId>
-		<Version>1.0.1</Version>
+		<Version>1.0.3</Version>
 		<Authors>Shilpa Bhat</Authors>
 		<Company></Company>
 		<Description>A repository pattern library for database operations.</Description>

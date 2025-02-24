@@ -3,13 +3,16 @@ using AppComponents.CoreLib.Repository.EFCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-public static class RepositoryServiceCollectionExtensions
+namespace AppComponents.CoreLib.Repository
 {
-    public static IServiceCollection AddRepository<T, TContext>(this IServiceCollection services)
-        where T : class
-        where TContext : DbContext
+    public static class RepositoryServiceCollectionExtensions
     {
-        services.AddScoped(typeof(IRepository<T, TContext>), typeof(Repository<T, TContext>));
-        return services;
+        public static IServiceCollection AddRepository<T, TContext>(this IServiceCollection services)
+            where T : class
+            where TContext : DbContext
+        {
+            services.AddScoped(typeof(IRepository<T, TContext>), typeof(Repository<T, TContext>));
+            return services;
+        }
     }
 }
