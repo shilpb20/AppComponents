@@ -1,4 +1,4 @@
-﻿using AppComponents.CoreLib;
+﻿using AppComponents.CoreLib.Repository.EFCore;
 using CoreLib.Tests;
 using CoreLib.Tests.Data;
 using Microsoft.EntityFrameworkCore;
@@ -53,7 +53,7 @@ namespace CoreLib.Tests
         }
 
         // Dispose DbContext
-        public Task DisposeAsync() => _dbContext.DisposeAsync().AsTask();
+        public async Task DisposeAsync() => await _dbContext.DisposeAsync().AsTask();
 
         protected void AssertMockItems(IEnumerable<MockItem> expectedItems, IEnumerable<MockItem> actualItems)
         {
@@ -84,11 +84,11 @@ namespace CoreLib.Tests
         {
             if (asNoTracking.HasValue)
             {
-                var result = await repository.GetAllAsync(filter, asNoTracking.Value);
+               await repository.GetAllAsync(filter, asNoTracking.Value);
             }
             else
             {
-                var result = await repository.GetAsync(filter);
+                await repository.GetAsync(filter);
             }
             VerifyTrackingBehavior(asNoTracking);
         }
@@ -103,11 +103,11 @@ namespace CoreLib.Tests
 
             if (asNoTracking.HasValue)
             {
-                var result = await repository.GetAsync(filter, asNoTracking.Value);
+                await repository.GetAsync(filter, asNoTracking.Value);
             }
             else
             {
-                var result = await repository.GetAsync(filter);
+                await repository.GetAsync(filter);
             }
 
             VerifyTrackingBehavior(asNoTracking);

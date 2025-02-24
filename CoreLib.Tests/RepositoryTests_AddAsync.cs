@@ -1,5 +1,7 @@
 ﻿using AppComponents.CoreLib;
+using AppComponents.CoreLib.Repository.EFCore;
 using CoreLib.Tests.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,17 +34,18 @@ namespace CoreLib.Tests
         }
 
         [Fact]
-        public async Task AddAsync_ReturnsNull_WhenNullObjectIsAdded()
+        public async Task AddAsync_ThrowsArgumentNullException_WhenNullObjectIsAdded()
         {
             //Arrange
             Repository<MockItem> repository = GetRepository();
 
             //Act  
-            var newItem = TestData.NewItem;
-            var result = await repository.AddAsync(null);
-
             //Assert
-            Assert.Null(result);
+            var newItem = TestData.NewItem;
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await repository.AddAsync(null);
+            });
         }
     }
 }

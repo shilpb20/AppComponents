@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-	  <RootNamespace>AppComponents.CoreLib</RootNamespace>
+	  <RootNamespace>AppComponents.CoreLib.Repository</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -15,8 +15,19 @@
 		<!-- Optional: suppress warnings for missing comments -->
 	</PropertyGroup>
 
-
-	<ItemGroup>
+	<PropertyGroup>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>AppComponents.CoreLib.Repository</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Shilpa Bhat</Authors>
+		<Company></Company>
+		<Description>A repository pattern library for database operations.</Description>
+		<PackageTags>repository dotnet csharp efcore</PackageTags>
+		<RepositoryUrl>https://github.com/shilpb20/AppComponents</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+	
+		<ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
   </ItemGroup>
 

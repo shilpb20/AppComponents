@@ -1,7 +1,9 @@
-using AppComponents.CoreLib;
+using AppComponents.CoreLib.Repository.EFCore;
 using AppComponents.CoreLib.Repository;
 using CoreLib.Tests.Data;
 using System.Collections.Immutable;
+using AppComponents.CoreLib.Repository.Abstraction;
+using Microsoft.EntityFrameworkCore;
 
 namespace CoreLib.Tests
 {
@@ -95,18 +97,16 @@ namespace CoreLib.Tests
 
         #endregion
 
-        #region pagination tests
+        #region pagination
 
         [Theory]
         [InlineData(1, 2)]
         [InlineData(2, 3)]
-        [InlineData(-1, 2)]
         public async Task GetAllAsyncWithPagination_ReturnsMatchingData_WhenDataIsInTheRange(int pageIndex, int pageSize)
         {
             //Act
-            InitializeAsync(TestData.MockItemsForPagination);
             var paginationSpec = new Pagination(pageIndex, pageSize);
-
+            InitializeAsync(TestData.MockItemsForPagination);
             var repository = GetRepository();
 
             int skipItems = (pageIndex - 1) * pageSize;
@@ -115,21 +115,53 @@ namespace CoreLib.Tests
 
 
             //Act
-            var result = await repository.GetAllAsync(null, true, null, paginationSpec);
+            var data = await repository.GetAllAsync(null, true, null, paginationSpec);
 
             //Assert
-            AssertMockItems(expectedResult, result);
+            AssertMockItems(expectedResult, data);
         }
+
+
+        [Theory]
+        [InlineData(2, 0)]
+        [InlineData(3, -2)]
+        [InlineData(4, null)]
+        [InlineData(null, -1)]
+        [InlineData(-1, 2)]
+        [InlineData(-2, null)]
+        [InlineData(null, 3)]
+        public async Task GetAllAsyncWithPagination_UsesDefaultValues_WhenInvalidValuesAreUsed(int pageIndex, int pageSize)
+        {
+            //Act
+            var paginationSpec = new Pagination(pageIndex, pageSize);
+            InitializeAsync(TestData.MockItemsForPagination);
+            var repository = GetRepository();
+
+            int expectedPageIndex = pageIndex <= 0 ? 1 : pageIndex;
+            int expectedPageSize = pageSize <= 0 ? 10 : pageSize;
+
+            int skipItems = (pageIndex - 1) * expectedPageSize;
+            int takeItems = expectedPageSize;
+            var expectedResult = TestData.MockItemsForPagination.Skip(skipItems).Take(takeItems).ToImmutableList();
+
+
+            //Act
+            var data = await repository.GetAllAsync(null, true, null, paginationSpec);
+
+            //Assert
+            AssertMockItems(expectedResult, data);
+        }
+
+
 
         [Theory]
         [InlineData(1, 30, 20)]
         [InlineData(4, 6, 2)]
         [InlineData(5, 5, 0)]
-        [InlineData(null, 3, 3)]
         public async Task GetAllAsyncWithPagination_ReturnsRemainingData_WhenMoreThanExistingDataIsRequested(int pageIndex, int pageSize, int takeItems)
         {
             //Act
-            var paginationSpec = new Pagination(pageIndex, pageSize);
+            var pageSpec = new Pagination(pageIndex, pageSize);
             InitializeAsync(TestData.MockItemsForPagination);
             var repository = GetRepository();
 
@@ -138,45 +170,10 @@ namespace CoreLib.Tests
 
 
             //Act
-            var result = await repository.GetAllAsync(null, true, null, paginationSpec);
+            var data = await repository.GetAllAsync(null, true, null, pageSpec);
 
             //Assert
-            AssertMockItems(expectedResult, result);
-        }
-
-        [Theory]
-        [InlineData(2, 0)]
-        [InlineData(3, -2)]
-        [InlineData(null, -1)]
-        [InlineData(-2, null)]
-        public async Task GetAllAsyncWithPagination_ReturnsEmptyData_WhenIncorrectRequestIsMade(int pageIndex, int pageSize)
-        {
-            //Act
-            Pagination pageSpec = new Pagination(pageIndex, pageSize);
-            InitializeAsync(TestData.MockItemsForPagination);
-            var repository = GetRepository();
-
-            //Act
-            var result = await repository.GetAllAsync(null, true, null, pageSpec);
-
-            //Assert
-            Assert.Empty(result);
-        }
-
-        [Theory]
-        [InlineData(4, null)]
-        public async Task GetAllAsyncWithPagination_ReturnsEmptyData_WhenNullValuesAreUsed(int pageIndex, int pageSize)
-        {
-            //Act
-            Pagination pageSpec = new Pagination(pageIndex, pageSize);
-            InitializeAsync(TestData.MockItemsForPagination);
-            var repository = GetRepository();
-
-            //Act
-            var result = await repository.GetAllAsync(null, true, null, pageSpec);
-
-            //Assert
-            Assert.Empty(result);
+            AssertMockItems(expectedResult, data);
         }
 
         #endregion

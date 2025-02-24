@@ -1,5 +1,6 @@
-﻿using AppComponents.CoreLib;
-using AppComponents.CoreLib.Repository;
+﻿using AppComponents.CoreLib.Repository;
+using AppComponents.CoreLib.Repository.Abstraction;
+using AppComponents.CoreLib.Repository.EFCore;
 using CoreLib.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,11 +9,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit.Sdk;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CoreLib.Tests
 {
-    public class RepositoryTests_UpdateAsync  : RepositoryTestsBase, IAsyncLifetime
+    public class RepositoryTests_UpdateAsync : RepositoryTestsBase, IAsyncLifetime
     {
         [Fact]
         public async Task UpdateAsync_ReturnsUpdatedValue_OnValidUpdate()
@@ -40,12 +40,10 @@ namespace CoreLib.Tests
 
             //Act  
             //Assert
-            var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             {
                 await repository.UpdateAsync(null);
             });
-
-            Assert.Equal(RepositoryConstants.NullUpdate, exception.Message);
         }
     }
 }

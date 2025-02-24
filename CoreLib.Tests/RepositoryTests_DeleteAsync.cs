@@ -1,4 +1,5 @@
 ﻿using AppComponents.CoreLib;
+using AppComponents.CoreLib.Repository.EFCore;
 using CoreLib.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -46,20 +47,16 @@ namespace CoreLib.Tests
         }
 
         [Fact]
-        public async Task DeleteAsync_ReturnsNull_WhenNullIsPassedForDeletion()
+        public async Task DeleteAsync_ThrowsNullArgumntException_WhenNullIsPassedForDeletion()
         {
             Repository<MockItem> repository = GetRepository();
 
             //Act  
-            var countBeforeDeletion = _dbContext.MockItems.Count();
-
-            var result = await repository.DeleteAsync(null);
-
-            var countAfterDeletion = _dbContext.MockItems.Count();
-
             //Assert
-            Assert.Null(result);
-            Assert.Equal(countBeforeDeletion, countAfterDeletion);
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            {
+                await repository.DeleteAsync(null);
+            });
         }
     }
 }
