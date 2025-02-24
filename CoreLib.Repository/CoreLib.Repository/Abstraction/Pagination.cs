@@ -21,20 +21,7 @@ namespace AppComponents.CoreLib.Repository.Abstraction
 
         public async Task<IQueryable<T>> GetPagedResult<T>(IQueryable<T> query)
         {
-            if (PageSize <= 0)
-            {
-                return query.Skip(await query.CountAsync());
-            }
-
-            int totalElements = await query.CountAsync();
-            int takeElements = PageSize <= totalElements ? PageSize : totalElements;
-            if (PageIndex <= 0)
-            {
-                return query.Take(takeElements);
-            }
-
-            int pointer = (PageIndex - 1) * PageSize;
-            return query.Skip(pointer).Take(takeElements);
+            return query.Skip((PageIndex - 1) * PageSize).Take(PageSize);
         }
     }
 }

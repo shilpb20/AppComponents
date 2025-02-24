@@ -1,10 +1,9 @@
 ﻿using AppComponents.CoreLib.Repository.EFCore;
-using CoreLib.Tests;
 using CoreLib.Tests.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using System.Linq.Expressions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CoreLib.Tests
 {
@@ -28,6 +27,7 @@ namespace CoreLib.Tests
 
         protected readonly QueryTrackingBehavior _trackAll = QueryTrackingBehavior.TrackAll;
         protected readonly QueryTrackingBehavior _noTrack = QueryTrackingBehavior.NoTracking;
+
 
         public async Task InitializeAsync()
         {
@@ -133,7 +133,15 @@ namespace CoreLib.Tests
                 throw new ArgumentNullException($"Database object not initialized {0}", nameof(_dbContext));
             }
 
-            var repository = new Repository<MockItem>(_dbContext);
+            var loggerFactory = LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+                builder.SetMinimumLevel(LogLevel.Debug);
+            });
+
+            var logger = loggerFactory.CreateLogger<Repository<MockItem>>();
+
+            var repository = new Repository<MockItem>(_dbContext, logger);
             if (repository == null)
             {
                 throw new ArgumentNullException(nameof(repository));

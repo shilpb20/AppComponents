@@ -1,5 +1,7 @@
 ﻿using AppComponents.CoreLib.Repository.Abstraction;
+using AppComponents.CoreLib.Repository.Helper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
 namespace AppComponents.CoreLib.Repository.EFCore
@@ -8,10 +10,13 @@ namespace AppComponents.CoreLib.Repository.EFCore
     {
         private readonly DbContext _dbContext;
         private readonly DbSet<T> _dataSet;
+        private readonly ILogger<IRepository<T>> _logger;
 
-        public Repository(DbContext dbContext)
+        public Repository(DbContext dbContext, ILogger<IRepository<T>> logger)
         {
             _dbContext = dbContext;
+            _logger = logger;
+
             _dataSet = _dbContext.Set<T>();
         }
 
@@ -24,8 +29,19 @@ namespace AppComponents.CoreLib.Repository.EFCore
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            await _dataSet.AddAsync(entity);
-            await SaveChangesAsync();
+            try
+            {
+                _logger.LogInformation("Adding entity of type {EntityType} with ID {EntityId}",
+                    typeof(T).Name, entity?.GetType().GetProperty("Id")?.GetValue(entity) ?? "Unknown");
+
+                await _dataSet.AddAsync(entity);
+                await SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding entity");
+                throw;
+            }
 
             return entity;
         }
@@ -37,8 +53,17 @@ namespace AppComponents.CoreLib.Repository.EFCore
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            _dataSet.Update(entity);
-            await SaveChangesAsync();
+            try
+            {
+                _logger.LogInformation($"Updating entity of type {typeof(T).Name}");
+                _dataSet.Update(entity);
+                await SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating entity");
+                throw;
+            }
 
             return entity;
         }
@@ -50,8 +75,17 @@ namespace AppComponents.CoreLib.Repository.EFCore
                 throw new ArgumentNullException(nameof(entity));
             }
 
-            _dataSet.Remove(entity);
-            await SaveChangesAsync();
+            try
+            {
+                _logger.LogInformation($"Deleting entity of type {typeof(T).Name}");
+                _dataSet.Remove(entity);
+                await SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting entity");
+                throw;
+            }
 
             return entity;
         }
@@ -90,35 +124,23 @@ namespace AppComponents.CoreLib.Repository.EFCore
             Dictionary<string, bool> orderByClause)
         {
             IOrderedQueryable<T>? orderedQuery = null;
-
             foreach (var order in orderByClause)
             {
                 var entityType = typeof(T);
                 var property = entityType.GetProperty(order.Key);
-                if (property == null) throw new ArgumentException($"Property {order.Key} not found on type {entityType.Name}");
+
+                if (property == null)
+                {
+                    throw new ArgumentException($"Invalid ordering property: {order.Key}");
+                }
 
                 var parameter = Expression.Parameter(entityType, "x");
                 var propertyAccess = Expression.Property(parameter, property);
-                var orderByExpression = Expression.Lambda(propertyAccess, parameter);
+                var lambda = Expression.Lambda<Func<T, object>>(Expression.Convert(propertyAccess, typeof(object)), parameter);
 
-                string methodName;
-
-                if (orderedQuery == null)
-                {
-                    methodName = order.Value ? "OrderBy" : "OrderByDescending";
-                    orderedQuery = (IOrderedQueryable<T>)typeof(Queryable).GetMethods()
-                        .First(method => method.Name == methodName && method.GetParameters().Length == 2)
-                        .MakeGenericMethod(entityType, property.PropertyType)
-                        .Invoke(null, new object[] { query, orderByExpression })!;
-                }
-                else
-                {
-                    methodName = order.Value ? "ThenBy" : "ThenByDescending";
-                    orderedQuery = (IOrderedQueryable<T>)typeof(Queryable).GetMethods()
-                        .First(method => method.Name == methodName && method.GetParameters().Length == 2)
-                        .MakeGenericMethod(entityType, property.PropertyType)
-                        .Invoke(null, new object[] { orderedQuery, orderByExpression })!;
-                }
+                orderedQuery = orderedQuery == null
+                    ? (order.Value ? query.OrderBy(lambda) : query.OrderByDescending(lambda))
+                    : (order.Value ? orderedQuery.ThenBy(lambda) : orderedQuery.ThenByDescending(lambda));
             }
 
             return orderedQuery ?? query;
