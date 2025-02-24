@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-	  <RootNamespace>AppComponents.CoreLib.Repository</RootNamespace>
+	  <RootNamespace>AppComponents.Repository</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -14,11 +14,19 @@
 		<NoWarn>$(NoWarn);1591</NoWarn>
 		<!-- Optional: suppress warnings for missing comments -->
 	</PropertyGroup>
+	
+	<ItemGroup>
+		<None Update="README.md">
+			<Pack>true</Pack>
+			<PackagePath>README.md</PackagePath>
+		</None>
+	</ItemGroup>
+
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>AppComponents.CoreLib.Repository</PackageId>
-		<Version>1.0.3</Version>
+		<Version>2.0.0</Version>
 		<Authors>Shilpa Bhat</Authors>
 		<Company></Company>
 		<Description>A repository pattern library for database operations.</Description>
@@ -26,8 +34,14 @@
 		<RepositoryUrl>https://github.com/shilpb20/AppComponents</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
-	
-		<ItemGroup>
+
+	<PropertyGroup>
+		<!-- Other properties -->
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+
+	<ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
   </ItemGroup>
 
