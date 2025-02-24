@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace CoreLib.Tests.TestData
+namespace CoreLib.Tests.Data
 {
     public class TestDbContext : DbContext
     {
