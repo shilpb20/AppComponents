@@ -1,9 +1,9 @@
-﻿using AppComponents.CoreLib.Repository.Abstraction;
+﻿using AppComponents.Repository.Abstraction;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
-namespace AppComponents.CoreLib.Repository.EFCore
+namespace AppComponents.Repository.EFCore
 {
     public class Repository<T, TContext> : IRepository<T, TContext> 
         where T : class

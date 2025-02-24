@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoreLib.Tests.Data
+namespace Repository.Tests.Data
 {
     public static class TestData
     {

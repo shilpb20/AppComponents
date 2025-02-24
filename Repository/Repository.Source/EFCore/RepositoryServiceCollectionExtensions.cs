@@ -1,9 +1,8 @@
-﻿using AppComponents.CoreLib.Repository.Abstraction;
-using AppComponents.CoreLib.Repository.EFCore;
+﻿using AppComponents.Repository.Abstraction;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AppComponents.CoreLib.Repository
+namespace AppComponents.Repository.EFCore
 {
     public static class RepositoryServiceCollectionExtensions
     {

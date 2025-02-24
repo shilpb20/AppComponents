@@ -1,20 +1,9 @@
-﻿using AppComponents.CoreLib.Repository.EFCore;
-using AppComponents.CoreLib.Repository;
-using CoreLib.Tests.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using AppComponents.CoreLib.Repository.Abstraction;
+﻿using AppComponents.Repository.EFCore;
+using Repository.Tests.Data;
 
-namespace CoreLib.Tests
+namespace Repository.Tests
 {
-    public class RepositoryTests_GetAsync  : RepositoryTestsBase, IAsyncLifetime
+    public class RepositoryTests_GetAsync : RepositoryTestsBase, IAsyncLifetime
     {
         [Fact]
         public async Task GetAsync_ReturnsNull_WhenMatchingDataNotFound()
@@ -55,7 +44,7 @@ namespace CoreLib.Tests
             var result = await repository.GetAsync(_queryItemWitDuplicateName);
 
             //Assert
-           AssertMockItem(expectedResult, result);
+            AssertMockItem(expectedResult, result);
         }
 
         //Note: Commenting tests as the behavior is not clear

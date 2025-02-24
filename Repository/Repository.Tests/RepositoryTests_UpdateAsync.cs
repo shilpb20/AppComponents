@@ -1,7 +1,6 @@
-﻿using AppComponents.CoreLib.Repository;
-using AppComponents.CoreLib.Repository.Abstraction;
-using AppComponents.CoreLib.Repository.EFCore;
-using CoreLib.Tests.Data;
+﻿using AppComponents.Repository.Abstraction;
+using AppComponents.Repository.EFCore;
+using Repository.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit.Sdk;
 
-namespace CoreLib.Tests
+namespace Repository.Tests
 {
     public class RepositoryTests_UpdateAsync : RepositoryTestsBase, IAsyncLifetime
     {

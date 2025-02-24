@@ -1,7 +1,6 @@
-﻿using AppComponents.CoreLib.Repository;
-using AppComponents.CoreLib.Repository.Abstraction;
-using AppComponents.CoreLib.Repository.EFCore;
-using CoreLib.Tests.Data;
+﻿using AppComponents.Repository.EFCore;
+using AppComponents.Repository.Abstraction;
+using Repository.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -9,7 +8,7 @@ using Xunit;
 public class RepositoryServiceCollectionExtensionsTests
 {
     [Fact]
-    public void AddCoreLibRepository_RegistersIRepository()
+    public void AddRepository_RegistersIRepository()
     {
         // Arrange
         // Act

@@ -1,11 +1,11 @@
-﻿using AppComponents.CoreLib.Repository.EFCore;
-using CoreLib.Tests.Data;
+﻿using AppComponents.Repository.EFCore;
+using Repository.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using System.Linq.Expressions;
 
-namespace CoreLib.Tests
+namespace Repository.Tests
 {
     public abstract class RepositoryTestsBase
     {

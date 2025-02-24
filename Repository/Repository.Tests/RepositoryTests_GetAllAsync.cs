@@ -1,11 +1,10 @@
-using AppComponents.CoreLib.Repository.EFCore;
-using AppComponents.CoreLib.Repository;
-using CoreLib.Tests.Data;
-using System.Collections.Immutable;
-using AppComponents.CoreLib.Repository.Abstraction;
-using Microsoft.EntityFrameworkCore;
 
-namespace CoreLib.Tests
+using Repository.Tests.Data;
+using System.Collections.Immutable;
+using AppComponents.Repository.Abstraction;
+using AppComponents.Repository.EFCore;
+
+namespace Repository.Tests
 {
     public class RepositoryTests_GetAllAsync : RepositoryTestsBase, IAsyncLifetime
     {
@@ -73,7 +72,7 @@ namespace CoreLib.Tests
         public async Task GetAllAsync_ReturnsAllItemsWithMatchingCondition_WhenCalledWithAMatchCondition_EvenIds()
         {
             //Arrange
-            Repository<MockItem, TestDbContext> repository = GetRepository();
+           var repository = GetRepository();
 
             //Act
             IEnumerable<MockItem> mockItemsWithEvenIds = await repository.GetAllAsync(_queryItemsWithEvenId);
