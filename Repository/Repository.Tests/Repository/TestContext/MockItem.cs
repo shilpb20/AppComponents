@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Tests.Data
+namespace Repository.Tests.Repository.TestContext
 {
     public class MockItem
     {
@@ -15,7 +15,7 @@ namespace Repository.Tests.Data
 
         [Required]
         [MinLength(3)]
-        public string Name { get; set; }  = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public string? Value { get; set; }
     }
 }

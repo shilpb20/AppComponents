@@ -25,8 +25,8 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageId>AppComponents.CoreLib.Repository</PackageId>
-		<Version>2.0.0</Version>
+		<PackageId>AppComponents.Repository</PackageId>
+		<Version>1.0.0</Version>
 		<Authors>Shilpa Bhat</Authors>
 		<Company></Company>
 		<Description>A repository pattern library for database operations.</Description>
@@ -36,10 +36,19 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<!-- Other properties -->
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<None Update="README.md">
+			<Pack>true</Pack>
+			<PackagePath>README.md</PackagePath>
+		</None>
+		<None Update="CHANGELOG.md">
+			<Pack>true</Pack>
+			<PackagePath>CHANGELOG.md</PackagePath>
+		</None>
+	</ItemGroup>
 
 	<ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Tests.Data
+namespace Repository.Tests.Repository.TestContext
 {
     public static class TestData
     {
@@ -17,7 +17,7 @@ namespace Repository.Tests.Data
         public static readonly string Column2 = "Name";
         public static readonly string Column3 = "Value";
 
-        public static readonly MockItem NewItem = new MockItem() { Id = 6,  Name = "New Item", Value = "New Value" };
+        public static readonly MockItem NewItem = new MockItem() { Id = 6, Name = "New Item", Value = "New Value" };
         public static readonly MockItem FirstDuplicateItem = new MockItem() { Id = 4, Name = DuplicateName, Value = "Value 4" };
         public static readonly MockItem LastDuplicateItem = new MockItem() { Id = 5, Name = DuplicateName, Value = "Value 4" };
 

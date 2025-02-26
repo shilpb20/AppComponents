@@ -1214,7 +1214,7 @@
           "xunit.extensibility.core": "[2.5.3]"
         }
       },
-      "AppComponents.CoreLib.Repository": {
+      "AppComponents.Repository": {
         "type": "Project",
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "[9.0.1, )"

@@ -1,11 +1,10 @@
 ﻿using AppComponents.Repository.EFCore;
-using Repository.Tests.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using System.Linq.Expressions;
 
-namespace Repository.Tests
+namespace Repository.Tests.Repository.TestContext
 {
     public abstract class RepositoryTestsBase
     {
@@ -22,11 +21,8 @@ namespace Repository.Tests
         protected readonly Expression<Func<MockItem, bool>> _queryItemWitDuplicateName = x => x.Name == TestData.DuplicateName;
         protected readonly Expression<Func<MockItem, bool>> _queryNewItemByName = x => x.Name == TestData.NewItem.Name;
 
-        protected readonly Expression<Func<MockItem, bool>> _queryItemsWithEvenId = x => x.Id % 2 ==0;
+        protected readonly Expression<Func<MockItem, bool>> _queryItemsWithEvenId = x => x.Id % 2 == 0;
         protected readonly Expression<Func<MockItem, bool>> _queryItemsWithOddId = x => x.Id % 2 != 0;
-
-        protected readonly QueryTrackingBehavior _trackAll = QueryTrackingBehavior.TrackAll;
-        protected readonly QueryTrackingBehavior _noTrack = QueryTrackingBehavior.NoTracking;
 
 
         public async Task InitializeAsync()
@@ -44,7 +40,7 @@ namespace Repository.Tests
 
             await _dbContext.Database.EnsureCreatedAsync();
 
-            if(mockItems != null)
+            if (mockItems != null)
             {
                 await _dbContext.MockItems.AddRangeAsync(mockItems);
             }
@@ -77,58 +73,9 @@ namespace Repository.Tests
             Assert.Equal(expectedResult?.Value, actualResult?.Value);
         }
 
-        protected async Task AssertTrackingBehaviorForGetAllAsync(
-            Repository<MockItem, TestDbContext> repository,
-            Expression<Func<MockItem, bool>> filter,
-            bool? asNoTracking = null)
-        {
-            if (asNoTracking.HasValue)
-            {
-               await repository.GetAllAsync(filter, asNoTracking.Value);
-            }
-            else
-            {
-                await repository.GetAsync(filter);
-            }
-            VerifyTrackingBehavior(asNoTracking);
-        }
-
-        protected async Task AssertTrackingBehaviorForGetAsync(
-            Repository<MockItem, TestDbContext> repository,
-            Expression<Func<MockItem, bool>> filter,
-            bool? asNoTracking = null)
-        {
-            _dbContext.ChangeTracker.Clear();
-
-
-            if (asNoTracking.HasValue)
-            {
-                await repository.GetAsync(filter, asNoTracking.Value);
-            }
-            else
-            {
-                await repository.GetAsync(filter);
-            }
-
-            VerifyTrackingBehavior(asNoTracking);
-        }
-
-        private void VerifyTrackingBehavior(bool? asNoTracking)
-        {
-            var currentTrackingBehavior = _dbContext.ChangeTracker.QueryTrackingBehavior;
-            if (asNoTracking.HasValue && asNoTracking.Value)
-            {
-                Assert.Equal(QueryTrackingBehavior.NoTracking, currentTrackingBehavior);
-            }
-            else
-            {
-                Assert.Equal(QueryTrackingBehavior.TrackAll, currentTrackingBehavior);
-            }
-        }
-
         protected Repository<MockItem, TestDbContext> GetRepository()
         {
-            if(_dbContext == null)
+            if (_dbContext == null)
             {
                 throw new ArgumentNullException($"Database object not initialized {0}", nameof(_dbContext));
             }
