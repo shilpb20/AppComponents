@@ -16,6 +16,7 @@ For detailed documentation, check the following:
 - Supports filtering, ordering, and pagination.
 - Integration with dependency injection.
 - Supports time stamped repository for automatically tracking creation and modification times.
+- Supports Transactions
 
 
 ## License

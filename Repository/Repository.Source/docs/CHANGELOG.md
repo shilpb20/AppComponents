@@ -18,6 +18,14 @@ This project follows [Semantic Versioning](https://semver.org/).
 ### Added
 - Time-stamped repository to automatically track entity creation and modification times.
 
+## [1.2.0] - 2025-03-15
+### Added
+- Transaction management interface to handle database transactions.
+- Option to skip transaction behavior during tests using the 'UseInMemoryDatabase' configuration setting.
+## [1.2.1] - 2025-03-15
+### Added
+- Transaction settings file for configurable transaction behavior.
+
 ---
 
 ## 🔹 How to Use This Changelog

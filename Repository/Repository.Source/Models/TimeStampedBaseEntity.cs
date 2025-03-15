@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AppComponents.Repository.Models
+﻿namespace AppComponents.Repository.Models
 {
     public abstract class TimeStampedBaseEntity
     {

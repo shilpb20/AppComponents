@@ -22,5 +22,12 @@ namespace AppComponents.Repository.EFCore
             services.AddScoped(typeof(IRepository<T, TContext>), typeof(TimeStampedRepository<T, TContext>));
             return services;
         }
+
+        public static IServiceCollection AddTransactionManager<TContext>(this IServiceCollection services)
+           where TContext : DbContext
+        {
+            services.AddScoped<ITransactionManager, TransactionManager<TContext>>();
+            return services;
+        }
     }
 }
