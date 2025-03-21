@@ -1,51 +1,50 @@
-name: .NET Core CI
+name: .NET Build and Test
 
 on:
   push:
     branches:
-      - development
-      - master
+      - main
   pull_request:
     branches:
-      - development
-      - master
-  workflow_dispatch:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    # Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Cache NuGet packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+    # Setup .NET SDK
+    - name: Set up .NET SDK
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '6.0'  # Adjust according to your .NET version
 
-      - name: Build code
-        run: |
-          dotnet restore
-          dotnet build --configuration Release
+    # Restore dependencies
+    - name: Restore dependencies
+      run: dotnet restore
 
-      - name: Ensure TestResults directory exists
-        run: mkdir -p ./TestResults
+    # Build the project
+    - name: Build the project
+      run: dotnet build --configuration Release
 
-      - name: Run tests with code coverage
-        run: |
-          dotnet test --configuration Release --no-build --logger "trx;LogFileName=./TestResults/test-results.trx" --collect:"XPlat Code Coverage" --verbosity normal
+    # Run tests and collect code coverage
+    - name: Run tests with coverage
+      run: |
+        dotnet test --configuration Release --collect:"XPlat Code Coverage"
 
-      # List files in the TestResults directory to confirm the file was created
-      - name: List files in TestResults directory
-        run: ls -R ./TestResults
+    # List the files in the TestResults directory (for debugging)
+    - name: List files in TestResults
+      run: ls -R ./TestResults
 
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: ./TestResults/test-results.trx
+    # Upload test results as artifacts
+    - name: Upload test results and coverage
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: |
+          ./TestResults/**/*.trx
+          ./TestResults/**/*.cobertura.xml  # If you want to upload coverage report
