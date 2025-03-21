@@ -27,14 +27,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Install SonarScanner
-        run: |
-          dotnet tool install --global dotnet-sonarscanner
-
-      - name: SonarCloud Begin Analysis
-        run: |
-          dotnet sonarscanner begin /k:"shilpb20_AppComponents" /o:"shilpb20" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-
       - name: Build code
         run: |
           dotnet restore
@@ -42,8 +34,19 @@ jobs:
 
       - name: Run tests with code coverage
         run: |
-          dotnet test --configuration Release --no-build --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" --verbosity normal
+          dotnet test --configuration Release --no-build --logger "trx;LogFileName=./TestResults/test-results.trx" --collect:"XPlat Code Coverage" --verbosity normal
 
-      - name: Publish Coverage Results to SonarCloud
-        run: |
-          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+      # Ensure TestResults directory exists
+      - name: Create TestResults directory
+        run: mkdir -p ./TestResults
+
+      # List files in the directory to check if test-results.trx was created
+      - name: List files in TestResults directory
+        run: ls -R ./TestResults
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: ./TestResults/test-results.trx
