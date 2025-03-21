@@ -32,15 +32,14 @@ jobs:
           dotnet restore
           dotnet build --configuration Release
 
+      - name: Ensure TestResults directory exists
+        run: mkdir -p ./TestResults
+
       - name: Run tests with code coverage
         run: |
           dotnet test --configuration Release --no-build --logger "trx;LogFileName=./TestResults/test-results.trx" --collect:"XPlat Code Coverage" --verbosity normal
 
-      # Ensure TestResults directory exists
-      - name: Create TestResults directory
-        run: mkdir -p ./TestResults
-
-      # List files in the directory to check if test-results.trx was created
+      # List files in the TestResults directory to confirm the file was created
       - name: List files in TestResults directory
         run: ls -R ./TestResults
 
