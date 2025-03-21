@@ -21,7 +21,7 @@ This project follows [Semantic Versioning](https://semver.org/).
 ### [1.2.1] - 2025-03-15
 - Transaction settings file added to configure transaction behavior (e.g., skip transactions in tests).
 
-## [1.3.0] - 2025-03-21
+### [1.3.0] - 2025-03-21
 - Documentation changes (clarified repository usage(in progress), added setup instructions, new Github path)
 ---
 
