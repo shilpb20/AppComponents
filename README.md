@@ -1,22 +1,28 @@
-# AppComponents
+# AppComponents.Repository
 
-AppComponents is a modular .NET library designed to provide reusable components for application development.  
-It includes various submodules that simplify working with repositories, data access, and more.
+A generic repository pattern implementation for Entity Framework Core.
 
-## 📁 Project Structure
+## Documentation
 
-- **`CoreLib.Repository`** - A repository abstraction layer for Entity Framework Core.
-- **`CoreLib.Repository.Test`** - Unit tests for the repository module.
-- **(Future Modules)** - Additional components and utilities will be introduced in later versions.
+For detailed documentation, check the following:
+- [Installation](docs/Installation.md)
+- [Usage](docs/Usage.md)
+- [Changelog](docs/Changelog.md)
 
-## 🚀 Getting Started
 
-### Prerequisites
-- .NET 6+ installed
-- A project that uses Entity Framework Core (if using the repository module)
+## Features
+- Generic repository pattern for Entity Framework Core.
+- Supports CRUD operations.
+- Supports filtering, ordering, and pagination.
+- Integration with dependency injection.
+- Supports time stamped repository for automatically tracking creation and modification times.
+- Supports Transactions
 
-### Installation
 
-#### Using NuGet (Once Published)
-```sh
-dotnet add package AppComponents.CoreLib
+UseInMemoryDatabase: Set to true to use an in-memory database. Defaults to false if not specified.
+
+
+## License
+
+MIT License
+
