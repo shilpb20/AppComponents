@@ -10,10 +10,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{FC0DC1E8-15A1-45AA-8D4B-27353ADD0537}"
 	ProjectSection(SolutionItems) = preProject
 		docs\CHANGELOG.md = docs\CHANGELOG.md
-		docs\INSTALLATION.md = docs\INSTALLATION.md
 		docs\README.md = docs\README.md
-		docs\REPOSITORY USAGE.md = docs\REPOSITORY USAGE.md
+		docs\USAGE.md = docs\USAGE.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github-workflow", "github-workflow", "{8B3BD55D-8642-4A7F-9A92-15AE387AC225}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github-workflow", "github-workflow", "{8B3BD55D-8642-4A7F-9A92-15AE387AC225}"
 	ProjectSection(SolutionItems) = preProject

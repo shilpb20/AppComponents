@@ -1,51 +1,51 @@
-name: .NET Build and Test
+name: .NET Core CI
 
 on:
   push:
     branches:
-      - main
+      - development
+      - master
   pull_request:
     branches:
-      - main
-  workflow_dispatch:  # This allows you to manually trigger the workflow
+      - development
+      - master
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout code
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # Setup .NET SDK
-    - name: Set up .NET SDK
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: '6.0'  # Adjust according to your .NET version
+      - name: Cache NuGet packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
-    # Restore dependencies
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Build code
+        run: |
+          dotnet restore
+          dotnet build --configuration Release
 
-    # Build the project
-    - name: Build the project
-      run: dotnet build --configuration Release
+      - name: Ensure TestResults directory exists
+        run: mkdir -p ./TestResults
 
-    # Run tests and collect code coverage
-    - name: Run tests with coverage
-      run: |
-        dotnet test --configuration Release --collect:"XPlat Code Coverage"
+      - name: Run tests with code coverage
+        run: |
+          dotnet test --configuration Release --no-build --logger "trx;LogFileName=./TestResults/test-results.trx" --collect:"XPlat Code Coverage" --verbosity normal
 
-    # List the files in the TestResults directory (for debugging)
-    - name: List files in TestResults
-      run: ls -R ./TestResults
+      # List files in the TestResults directory to confirm the file was created
+      - name: List files in TestResults directory
+        run: ls -R ./TestResults
 
-    # Upload test results as artifacts
-    - name: Upload test results and coverage
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-results
-        path: |
-          ./TestResults/**/*.trx
-          ./TestResults/**/*.cobertura.xml  # If you want to upload coverage report
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: ./TestResults/test-results.trx
