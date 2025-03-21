@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppComponents.Repository", "src\AppComponents.Repository.csproj", "{497A7ED4-CB21-4668-B217-6644B6789310}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppComponents.Repository.Tests", "tests\AppComponents.Repository.Tests.csproj", "{90204E94-5100-47CA-B729-64A0B340CC02}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{FC0DC1E8-15A1-45AA-8D4B-27353ADD0537}"
+	ProjectSection(SolutionItems) = preProject
+		docs\CHANGELOG.md = docs\CHANGELOG.md
+		docs\INSTALLATION.md = docs\INSTALLATION.md
+		docs\README.md = docs\README.md
+		docs\REPOSITORY USAGE.md = docs\REPOSITORY USAGE.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{497A7ED4-CB21-4668-B217-6644B6789310}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{497A7ED4-CB21-4668-B217-6644B6789310}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{497A7ED4-CB21-4668-B217-6644B6789310}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{497A7ED4-CB21-4668-B217-6644B6789310}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90204E94-5100-47CA-B729-64A0B340CC02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90204E94-5100-47CA-B729-64A0B340CC02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90204E94-5100-47CA-B729-64A0B340CC02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90204E94-5100-47CA-B729-64A0B340CC02}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
