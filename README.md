@@ -5,9 +5,9 @@ A generic repository pattern implementation for Entity Framework Core.
 ## Documentation
 
 For detailed documentation, check the following:
-- [Installation](docs/Installation.md)
-- [Usage](docs/Usage.md)
-- [Changelog](docs/Changelog.md)
+- [ReadMe](Readme.md)
+- [Changelog](Changelog.md)
+- [Usage](Usage.md)
 
 
 ## Features
