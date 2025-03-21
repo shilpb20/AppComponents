@@ -7,7 +7,7 @@ A generic repository pattern implementation for Entity Framework Core.
 For detailed documentation, check the following:
 - [Installation](Installation.md)
 - [Usage](Usage.md)
-- [Changelog](Changelog.md)
+- [Changelog](docs/CHANGELOG.md)
 
 
 ## Features
