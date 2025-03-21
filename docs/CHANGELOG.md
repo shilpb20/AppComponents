@@ -4,7 +4,6 @@ All notable changes to this project will be documented in this file.
 This project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-### Added
 - Placeholder for upcoming features
 
 ### [1.0.0] - 2025-02-24
