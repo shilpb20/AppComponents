@@ -15,8 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{FC0DC1E8-1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github-workflow", "github-workflow", "{8B3BD55D-8642-4A7F-9A92-15AE387AC225}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github-workflow", "github-workflow", "{8B3BD55D-8642-4A7F-9A92-15AE387AC225}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\dotnetcore_ci.yml = .github\workflows\dotnetcore_ci.yml
 	EndProjectSection
